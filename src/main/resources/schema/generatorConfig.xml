@@ -1,0 +1,47 @@
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <property name="mappers" value="tk.mybatis.mapper.common.Mapper"/>
+            <property name="caseSensitive" value="true"/>
+        </plugin>
+
+        <commentGenerator>
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
+
+        <!--connection configuration-->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://120.78.175.39:30001/db_serinus_system?useSSL=false"
+                        userId="root"
+                        password="dev#pass">
+        </jdbcConnection>
+
+        <!--1 Model-->
+        <javaModelGenerator targetPackage="org.maples.serinus.model"
+                            targetProject="src/main/java"/>
+        <!--2 mapper.xml-->
+        <sqlMapGenerator targetPackage="mapper"
+                         targetProject="src/main/resources"/>
+        <!--3 Mapper -->
+        <javaClientGenerator targetPackage="org.maples.serinus.repository"
+                             targetProject="src/main/java"
+                             type="XMLMAPPER"/>
+
+        <table tableName="tb_serinus_user" domainObjectName="SerinusUser">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>
+        <table tableName="tb_serinus_role" domainObjectName="SerinusRole">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>
+        <table tableName="tb_serinus_permission" domainObjectName="SerinusPermission">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>
+    </context>
+</generatorConfiguration>

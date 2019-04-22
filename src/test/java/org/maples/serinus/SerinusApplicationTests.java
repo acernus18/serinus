@@ -11,6 +11,6 @@ public class SerinusApplicationTests {
 
     @Test
     public void contextLoads() {
-    }
 
+    }
 }
