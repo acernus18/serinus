@@ -1,2 +1,2 @@
-# canaria
-Canaria is a open-source system for configuration dispatching.
+# Serinus
+Serinus is a open-source system for configuration dispatching.
