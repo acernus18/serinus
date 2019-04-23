@@ -1,5 +1,6 @@
 package org.maples.serinus.repository;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.maples.serinus.SerinusApplicationTests;
 import org.maples.serinus.model.SerinusPermission;
@@ -21,7 +22,7 @@ public class SerinusPermissionTest extends SerinusApplicationTests {
 
     @Test
     @Transactional
-    public void testCreate() {
+    public void testDeleteCascade() {
         SerinusUser serinusUser = new SerinusUser();
         serinusUser.setPrincipal("v_test_account");
         serinusUser.setCredential("v_test_password");
@@ -41,22 +42,15 @@ public class SerinusPermissionTest extends SerinusApplicationTests {
         permission.setPermissionLevel(0);
         permission.setStatus(0);
         permissionMapper.insert(permission);
-    }
 
-    // @Test
-    // public void testRead() {
-    //
-    // }
-    //
-    // @Test
-    // public void testUpdate() {
-    //     List<SerinusUser> serinusUsers = userMapper.selectAll();
-    //     Assert.assertTrue(serinusUsers.isEmpty());
-    // }
-    //
-    // @Test
-    // public void testDelete() {
-    //     List<SerinusUser> serinusUsers = userMapper.selectAll();
-    //     Assert.assertTrue(serinusUsers.isEmpty());
-    // }
+        // Read
+        SerinusUser testUser = userMapper.selectOneByPrincipal("v_test_account");
+        Assert.assertEquals(testUser.getCredential(), "v_test_password");
+
+        // Delete
+        Assert.assertNotNull(permissionMapper.selectByPrimaryKey(permission.getId()));
+        userMapper.deleteByPrimaryKey(serinusUser.getId());
+        Assert.assertNull(permissionMapper.selectByPrimaryKey(permission.getId()));
+        roleMapper.deleteByPrimaryKey(serinusRole.getId());
+    }
 }
