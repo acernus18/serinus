@@ -8,4 +8,8 @@ import java.util.List;
 
 public interface SerinusPermissionMapper extends Mapper<SerinusPermission> {
     List<SerinusPermission> selectByUserId(@Param("userId") Integer userId);
+
+    List<SerinusPermission> selectByRoleId(@Param("roleId") Integer roleId);
+
+    SerinusPermission selectOneByUserIdAndRoleId(@Param("userId") Integer userId, @Param("roleId") Integer roleId);
 }

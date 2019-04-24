@@ -17,7 +17,9 @@ create table if not exists `tb_serinus_role`
 (
     `id`     int          not null primary key auto_increment,
     `name`   varchar(255) not null,
-    `status` int          not null default 0
+    `status` int          not null default 0,
+
+    unique index u_idx_name (`name`)
 ) engine = Innodb
   default charset `utf8mb4`;
 

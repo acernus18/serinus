@@ -15,6 +15,8 @@ import java.util.Map;
 @Configuration
 public class SecurityConfig {
 
+    private static final boolean ENABLE = false;
+
     @Autowired
     private SessionService sessionRepository;
 
@@ -46,7 +48,13 @@ public class SecurityConfig {
         filterChainDefinitionMap.put("/favicon.ico", "anon");
         filterChainDefinitionMap.put("/login", "anon");
         filterChainDefinitionMap.put("/check", "anon");
-        filterChainDefinitionMap.put("/**", "authc");
+
+        if (ENABLE) {
+            filterChainDefinitionMap.put("/**", "authc");
+        } else {
+            filterChainDefinitionMap.put("/**", "anon");
+        }
+
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
     }

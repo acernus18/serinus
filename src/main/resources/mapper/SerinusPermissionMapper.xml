@@ -19,4 +19,20 @@
             `user_id` = ${userId}
         </where>
     </select>
+
+    <select id="selectByRoleId" resultMap="BaseResultMap">
+        select `id`, `user_id`, `role_id`, `permission_level`, `status`
+        from tb_serinus_permission
+        <where>
+            `role_id` = ${roleId}
+        </where>
+    </select>
+
+    <select id="selectOneByUserIdAndRoleId" resultMap="BaseResultMap">
+        select `id`, `user_id`, `role_id`, `permission_level`, `status`
+        from tb_serinus_permission
+        <where>
+            `user_id` = ${userId} and `role_id` = ${roleId}
+        </where>
+    </select>
 </mapper>

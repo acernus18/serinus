@@ -53,4 +53,10 @@ public class SerinusPermissionTest extends SerinusApplicationTests {
         Assert.assertNull(permissionMapper.selectByPrimaryKey(permission.getId()));
         roleMapper.deleteByPrimaryKey(serinusRole.getId());
     }
+
+    @Test
+    @Transactional
+    public void testUniqueInsert() {
+        // TODO: duplicate insert
+    }
 }

@@ -1,5 +1,6 @@
 package org.maples.serinus.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -17,12 +18,16 @@ import org.maples.serinus.repository.SerinusRoleMapper;
 import org.maples.serinus.repository.SerinusUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+@Slf4j
 @Service
 public class AuthorizingService extends AuthorizingRealm {
 
@@ -69,24 +74,89 @@ public class AuthorizingService extends AuthorizingRealm {
         return new SimpleAuthenticationInfo(principal, serinusUser.getCredential(), this.getName());
     }
 
-    public List<String> getRoles() {
-        List<SerinusRole> serinusRoles = roleMapper.selectAll();
-        List<String> roles = new ArrayList<>();
+    @Transactional
+    public void addSerinusUser(SerinusUser serinusUser) {
+        serinusUser.setStatus(0);
+        userMapper.insert(serinusUser);
+    }
 
-        for (SerinusRole serinusRole : serinusRoles) {
-            if (!serinusRole.getName().equals(SYSTEM_ADMIN)) {
-                roles.add(serinusRole.getName());
-            }
+    @Transactional
+    public void addSerinusRole(String roleName) {
+        SerinusRole role = new SerinusRole();
+        role.setName(roleName);
+        role.setStatus(0);
+
+        roleMapper.insert(role);
+    }
+
+    @Transactional
+    public void addSerinusPermission(String principal, String roleName, int level) {
+        SerinusUser user = userMapper.selectOneByPrincipal(principal);
+        SerinusRole role = roleMapper.selectByRoleName(roleName);
+
+        if (role == null || user == null) {
+            return;
         }
 
-        return roles;
+        SerinusPermission permission = permissionMapper.selectOneByUserIdAndRoleId(user.getId(), role.getId());
+        if (permission == null) {
+
+            permission = new SerinusPermission();
+            permission.setUserId(user.getId());
+            permission.setRoleId(role.getId());
+            permission.setPermissionLevel(level);
+            permission.setStatus(0);
+            permissionMapper.insert(permission);
+        }
     }
 
-    public void addSerinusRole() {
-        // TODO: addSerinusRole
+    @Transactional
+    public void deleteSerinusRole(String roleName) {
+        SerinusRole role = roleMapper.selectByRoleName(roleName);
+
+        if (role != null) {
+            roleMapper.deleteByPrimaryKey(role.getId());
+        }
     }
 
-    public void addSerinusPermission() {
-        // TODO: addSerinusPermission
+    @Transactional
+    public void deleteSerinusPermission(String principal, String roleName) {
+        SerinusUser user = userMapper.selectOneByPrincipal(principal);
+        SerinusRole role = roleMapper.selectByRoleName(roleName);
+
+        if (role == null || user == null) {
+            return;
+        }
+
+        SerinusPermission permission = permissionMapper.selectOneByUserIdAndRoleId(user.getId(), role.getId());
+        if (permission != null) {
+            permissionMapper.deleteByPrimaryKey(permission.getId());
+        }
+    }
+
+    public List<SerinusRole> getSerinusRoles() {
+        return roleMapper.selectAll();
+    }
+
+    public List<SerinusUser> getSerinusUsers() {
+        return userMapper.selectAll();
+    }
+
+    public Map<String, List<SerinusUser>> getRoleUserMapping() {
+        Map<String, List<SerinusUser>> roleUserMap = new HashMap<>();
+
+        List<SerinusRole> serinusRoles = roleMapper.selectAll();
+        for (SerinusRole serinusRole : serinusRoles) {
+            List<SerinusUser> users = new ArrayList<>();
+
+            List<SerinusPermission> permissions = permissionMapper.selectByRoleId(serinusRole.getId());
+            for (SerinusPermission permission : permissions) {
+                users.add(userMapper.selectByPrimaryKey(permission.getUserId()));
+            }
+
+            roleUserMap.put(serinusRole.getName(), users);
+        }
+
+        return roleUserMap;
     }
 }
