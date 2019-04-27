@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.maples.serinus.repository.SerinusStrategyMapper">
+    <resultMap id="BaseResultMap" type="org.maples.serinus.model.SerinusStrategy">
+        <id column="uuid" jdbcType="VARCHAR" property="uuid"/>
+        <result column="product" jdbcType="VARCHAR" property="product"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="preset_type" jdbcType="INTEGER" property="presetType"/>
+        <result column="max_count" jdbcType="INTEGER" property="maxCount"/>
+        <result column="start_at" jdbcType="TIMESTAMP" property="startAt"/>
+        <result column="end_at" jdbcType="TIMESTAMP" property="endAt"/>
+        <result column="filter" jdbcType="VARCHAR" property="filter"/>
+        <result column="always_return" jdbcType="BIT" property="alwaysReturn"/>
+        <result column="order_in_product" jdbcType="INTEGER" property="orderInProduct"/>
+        <result column="content" jdbcType="LONGVARCHAR" property="content"/>
+    </resultMap>
+</mapper>

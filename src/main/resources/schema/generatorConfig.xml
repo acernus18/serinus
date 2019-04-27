@@ -34,14 +34,17 @@
                              targetProject="src/main/java"
                              type="XMLMAPPER"/>
 
-        <table tableName="tb_serinus_user" domainObjectName="SerinusUser">
-            <generatedKey column="id" sqlStatement="JDBC"/>
-        </table>
-        <table tableName="tb_serinus_role" domainObjectName="SerinusRole">
-            <generatedKey column="id" sqlStatement="JDBC"/>
-        </table>
-        <table tableName="tb_serinus_permission" domainObjectName="SerinusPermission">
-            <generatedKey column="id" sqlStatement="JDBC"/>
+        <!--<table tableName="tb_serinus_user" domainObjectName="SerinusUser">-->
+        <!--    <generatedKey column="id" sqlStatement="JDBC"/>-->
+        <!--</table>-->
+        <!--<table tableName="tb_serinus_role" domainObjectName="SerinusRole">-->
+        <!--    <generatedKey column="id" sqlStatement="JDBC"/>-->
+        <!--</table>-->
+        <!--<table tableName="tb_serinus_permission" domainObjectName="SerinusPermission">-->
+        <!--    <generatedKey column="id" sqlStatement="JDBC"/>-->
+        <!--</table>-->
+        <table tableName="tb_serinus_strategy" domainObjectName="SerinusStrategy">
+            <generatedKey column="uuid" sqlStatement="JDBC"/>
         </table>
     </context>
 </generatorConfiguration>

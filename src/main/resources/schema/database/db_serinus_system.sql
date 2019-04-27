@@ -40,6 +40,17 @@ create table if not exists `tb_serinus_permission`
 
 create table if not exists `tb_serinus_strategy`
 (
-    `id` int primary key
+    `uuid`             varchar(24)  not null primary key,
+    `product`          varchar(255) not null,
+    `title`            varchar(255) not null,
+    `type`             int(2)       not null,
+    `preset_type`      int(2)       not null,
+    `max_count`        int          not null,
+    `start_at`         datetime     not null,
+    `end_at`           datetime     not null,
+    `filter`           varchar(255) not null,
+    `always_return`    int(1)       not null,
+    `content`          text         not null,
+    `order_in_product` int          not null
 ) engine = Innodb
   default charset `utf8mb4`;

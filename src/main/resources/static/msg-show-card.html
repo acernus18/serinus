@@ -1,0 +1,136 @@
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!--<link rel="stylesheet" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css">-->
+    <!--<script src="/webjars/jquery-3.3.1.slim.min.js"></script>-->
+    <!--<script src="/webjars/popper.js/1.14.7/umd/popper.min.js"></script>-->
+    <!--<script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>-->
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/codemirror/5.46.0/codemirror.css">
+    <script src="https://cdn.staticfile.org/codemirror/5.46.0/codemirror.js"></script>
+    <script src="https://cdn.staticfile.org/codemirror/5.46.0/addon/selection/active-line.js"></script>
+    <script src="https://cdn.staticfile.org/codemirror/5.46.0/addon/edit/matchbrackets.js"></script>
+    <script src="https://cdn.staticfile.org/codemirror/5.46.0/mode/javascript/javascript.js"></script>
+
+</head>
+<body>
+
+<div class="card">
+    <div class="card-header">
+        Featured
+        <button>Up</button>
+        <button>Down</button>
+        <button>Top</button>
+        <button>Bottom</button>
+    </div>
+
+    <div class="card-body">
+        <table class="table" style="table-layout:fixed;">
+            <thead>
+            <tr>
+                <th>msg</th>
+                <th>startAt - endAt</th>
+                <th>status</th>
+                <th>other</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="align-middle">
+                    <label for="code">
+                        ID: 123
+                    </label>
+                    <textarea class="form-control" id="code" rows="4"></textarea>
+                </td>
+                <td class="align-middle">
+                    <p>2019/4/1 00:00:00</p>
+                    <p>2019/4/1 00:00:00</p>
+                </td>
+                <td class="align-middle">
+                    <button type="button" class="btn btn-outline-primary">Enable</button>
+                    <br/>
+                    <br/>
+                    <button type="button" class="btn btn-outline-danger">Disable</button>
+                </td>
+                <td class="align-middle">
+                    <p>
+                        <b>type：</b>
+                        <span>普通</span>
+                    </p>
+                    <p>
+                        <b>max-count：</b> 100
+                    </p>
+                    <p>
+                        <b>popped：</b><span>-</span>&nbsp;&nbsp;
+                        <button type="button" class="btn btn-primary btn-sm">
+                            Add
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm">
+                            Download
+                        </button>
+                    </p>
+                    <p>
+                        <b>actions：</b>
+                        <button type="button" class="btn btn-primary btn-sm">
+                            Export
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm">
+                            Delete
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm">
+                            Copy
+                        </button>
+                    </p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card-footer text-muted">
+        2 days ago
+    </div>
+</div>
+</body>
+
+<style type="text/css">
+    .CodeMirror{
+        border:1px solid black;
+        font-size:15px;
+        height: 150px;
+    }
+</style>
+<script>
+    const editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,
+        styleActiveLine: true,
+        matchBrackets: true,
+        indentUnit: 4,
+        readOnly: true
+    });
+
+    const obj = {
+        "message": "",
+        "code": 200,
+        "response": {
+            "totalCount": 1,
+            "pageSize": 5,
+            "page": 1,
+            "page2": 1,
+            "page3": 1,
+            "page4": 1,
+            "page5": 1,
+        },
+        "success": true
+    };
+    editor.setValue(JSON.stringify(obj, null, 4));
+</script>
+</html>
