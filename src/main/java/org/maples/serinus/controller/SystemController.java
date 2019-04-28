@@ -3,7 +3,7 @@ package org.maples.serinus.controller;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.maples.serinus.model.SerinusUser;
-import org.maples.serinus.service.AuthorizingService;
+import org.maples.serinus.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class SystemController {
 
     @Autowired
-    private AuthorizingService authorizingService;
+    private PermissionService permissionService;
 
     @GetMapping("/dashboard")
     public String dashboardFTL(Model model) {
-        model.addAttribute("allUsers", authorizingService.getSerinusUsers());
-        model.addAttribute("rolesMapping", authorizingService.getRoleUserMapping());
+        model.addAttribute("allUsers", permissionService.getSerinusUsers());
+        model.addAttribute("rolesMapping", permissionService.getRoleUserMapping());
         return "system/dashboard";
     }
 
@@ -36,7 +36,7 @@ public class SystemController {
         serinusUser.setEmail(email);
 
         log.info("Receive add user: \n {}", JSON.toJSONString(serinusUser, true));
-        authorizingService.addSerinusUser(serinusUser);
+        permissionService.addSerinusUser(serinusUser);
         log.info("Success");
 
         return "redirect:/system/dashboard";
@@ -45,7 +45,7 @@ public class SystemController {
     @PostMapping("/role/add")
     public String addSerinusRole(String roleName) {
         log.info("Receive add role: \n {}", roleName);
-        authorizingService.addSerinusRole(roleName);
+        permissionService.addSerinusRole(roleName);
         log.info("Success");
 
         return "redirect:/system/dashboard";
@@ -53,14 +53,14 @@ public class SystemController {
 
     @GetMapping("/role/delete/{roleName}")
     public String deleteSerinusRole(@PathVariable("roleName") String roleName) {
-        authorizingService.deleteSerinusRole(roleName);
+        permissionService.deleteSerinusRole(roleName);
         return "redirect:/system/dashboard";
     }
 
     @PostMapping("/permission/{roleName}/add")
     public String addSerinusPermission(@PathVariable String roleName, String principal, int level) {
         log.info("Receive add permission {} to {}, level {}", roleName, principal, level);
-        authorizingService.addSerinusPermission(principal, roleName, level);
+        permissionService.addSerinusPermission(principal, roleName, level);
         log.info("Success");
 
         return "redirect:/system/dashboard";
@@ -69,7 +69,7 @@ public class SystemController {
     @GetMapping("/permission/{roleName}/delete/{principal}")
     public String deleteSerinusPermission(@PathVariable("principal") String principal,
                                           @PathVariable("roleName") String roleName) {
-        authorizingService.deleteSerinusPermission(principal, roleName);
+        permissionService.deleteSerinusPermission(principal, roleName);
         return "redirect:/system/dashboard";
     }
 }

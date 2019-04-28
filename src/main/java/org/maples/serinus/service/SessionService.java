@@ -1,6 +1,7 @@
 package org.maples.serinus.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.cache.AbstractCacheManager;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
@@ -10,8 +11,7 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.eis.CachingSessionDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-@Service
+@Component
 public class SessionService extends CachingSessionDAO {
     private static final String SESSION_PREFIX = "SESSION_";
 
@@ -42,7 +42,7 @@ public class SessionService extends CachingSessionDAO {
     }
 
     private static Session deserializeSession(String session) throws IOException, ClassNotFoundException {
-        if (StringUtils.isEmpty(session)) {
+        if (StringUtils.isBlank(session)) {
             return null;
         }
         ByteArrayInputStream bis = new ByteArrayInputStream(Base64.decode(session));
