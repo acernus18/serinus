@@ -1,26 +1,49 @@
 package org.maples.serinus.utility;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Base64Utils;
 
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 public class SerinusHelper {
-    private static int compareVersion(String v1, String v2) {
-        if (StringUtils.isAnyBlank(v1, v2)) {
+    public static String generateUUID() {
+        return UUID.randomUUID().toString().replace("-", "").substring(0, 24);
+    }
+
+    public static String base64Encode(String value) {
+        return Base64Utils.encodeToString(value.getBytes());
+    }
+
+    public static String base64Decode(String value) {
+        return new String(Base64Utils.decodeFromString(value));
+    }
+
+    private static int compareVersion(String version1, String version2) {
+        if (StringUtils.isAnyBlank(version1, version2)) {
             return 0;
         }
 
-        String[] versionArray1 = v1.split("\\.");
-        String[] versionArray2 = v2.split("\\.");
+        String[] versionArray1 = version1.split("\\.");
+        String[] versionArray2 = version2.split("\\.");
 
         int minLength = Math.min(versionArray1.length, versionArray2.length);
 
         for (int i = 0; i < minLength; i++) {
-            if (versionArray1[i].compareTo(versionArray2[i]) != 0) {
-                return versionArray1[i].compareTo(versionArray2[i]);
+            try {
+                int v1 = Integer.valueOf(versionArray1[i]);
+                int v2 = Integer.valueOf(versionArray2[i]);
+
+                if (v1 != v2) {
+                    return Integer.compare(v1, v2);
+                }
+            } catch (NumberFormatException e) {
+                if (versionArray1[i].compareTo(versionArray2[i]) != 0) {
+                    return versionArray1[i].compareTo(versionArray2[i]);
+                }
             }
         }
 
@@ -29,29 +52,16 @@ public class SerinusHelper {
 
 
     public static boolean compare(JSONObject conditionMap, Map<String, String> parameters) {
-        // {
-        //  "app_version":
-        //  {
-        //    "in": ["123", "13"],
-        //    "in": ["123", "13"],
-        //    "in": ["123", "13"],
-        //  }
-        // }
-        for (String conditionKey : conditionMap.keySet()) {
-            String value = parameters.get(conditionKey);
+        for (String key : conditionMap.keySet()) {
+            String value = parameters.get(key);
             if (value == null) {
                 return false;
             }
 
-            //  {
-            //    "in": ["123", "13"],
-            //    "in": ["123", "13"],
-            //    "in": ["123", "13"],
-            //  }
-            JSONObject condition = conditionMap.getJSONObject(conditionKey);
+            JSONObject condition = conditionMap.getJSONObject(key);
+            log.debug("key = {}, value = {}, condition = {}", key, value, condition.toJSONString());
             for (String operator : condition.keySet()) {
                 boolean match = false;
-                // "in": ["123", "13"],
                 switch (operator) {
                     case "$IN":
                         match = condition.getJSONArray(operator).contains(value);
@@ -85,6 +95,7 @@ public class SerinusHelper {
                         break;
                 }
 
+                log.debug("Operator = {} , match result = {}", operator, match);
                 if (!match) {
                     return false;
                 }
@@ -94,7 +105,4 @@ public class SerinusHelper {
         return true;
     }
 
-    public static String generateUUID() {
-        return UUID.randomUUID().toString().replace("-", "").substring(0, 24);
-    }
 }

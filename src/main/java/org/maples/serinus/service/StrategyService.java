@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.maples.serinus.model.SerinusStrategy;
 import org.maples.serinus.repository.SerinusStrategyMapper;
 import org.maples.serinus.utility.SerinusHelper;
@@ -26,11 +25,14 @@ public class StrategyService {
     private SerinusStrategyMapper strategyMapper;
 
     public SerinusStrategy getStrategyByUUID(String uuid) {
-        return strategyMapper.selectByPrimaryKey(uuid);
-    }
+        SerinusStrategy strategy = strategyMapper.selectByPrimaryKey(uuid);
 
-    public void deleteStrategyByUUID(String uuid) {
-        strategyMapper.deleteByPrimaryKey(uuid);
+        if (strategy != null) {
+            strategy.setFilter(SerinusHelper.base64Decode(strategy.getFilter()));
+            strategy.setContent(SerinusHelper.base64Decode(strategy.getContent()));
+        }
+
+        return strategy;
     }
 
     public void saveStrategy(SerinusStrategy strategy) {
@@ -50,8 +52,8 @@ public class StrategyService {
         }
 
         if (formatValidation && filter != null && content != null) {
-            strategy.setFilter(Base64.encodeBase64String(filter.toJSONString().getBytes()));
-            strategy.setContent(Base64.encodeBase64String(content.toJSONString().getBytes()));
+            strategy.setFilter(SerinusHelper.base64Encode(filter.toJSONString()));
+            strategy.setContent(SerinusHelper.base64Encode(content.toJSONString()));
 
             if (!StringUtils.isEmpty(strategy.getUuid())) {
                 // Confirm that an object with same id existing in database;
@@ -86,6 +88,8 @@ public class StrategyService {
             group.putIfAbsent(strategy.getTitle(), new ArrayList<>());
             List<SerinusStrategy> strategies = group.get(strategy.getTitle());
 
+            strategy.setFilter(SerinusHelper.base64Decode(strategy.getFilter()));
+            strategy.setContent(SerinusHelper.base64Decode(strategy.getContent()));
             strategies.add(strategy);
         }
 
@@ -99,6 +103,9 @@ public class StrategyService {
         for (SerinusStrategy strategy : serinusStrategies) {
             result.putIfAbsent(strategy.getProduct(), new ArrayList<>());
             List<SerinusStrategy> strategies = result.get(strategy.getTitle());
+
+            strategy.setFilter(SerinusHelper.base64Decode(strategy.getFilter()));
+            strategy.setContent(SerinusHelper.base64Decode(strategy.getContent()));
             strategies.add(strategy);
         }
 
