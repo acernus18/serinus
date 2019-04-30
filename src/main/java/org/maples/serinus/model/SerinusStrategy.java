@@ -41,5 +41,7 @@ public class SerinusStrategy {
     @Column(name = "order_in_product")
     private Integer orderInProduct;
 
+    private Boolean enabled;
+
     private String content;
 }

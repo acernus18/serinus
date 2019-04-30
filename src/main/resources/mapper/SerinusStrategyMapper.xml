@@ -13,6 +13,7 @@
         <result column="filter" jdbcType="VARCHAR" property="filter"/>
         <result column="always_return" jdbcType="BIT" property="alwaysReturn"/>
         <result column="order_in_product" jdbcType="INTEGER" property="orderInProduct"/>
+        <result column="enabled" jdbcType="BIT" property="enabled"/>
         <result column="content" jdbcType="LONGVARCHAR" property="content"/>
     </resultMap>
 </mapper>
