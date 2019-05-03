@@ -38,11 +38,11 @@ if is_preset_type then
 
     if is_white_preset then
         if exists_in_preset ~= 1 then
-            return 0
+            return '0';
         end
     else
         if exists_in_preset == 1 then
-            return 0
+            return '0';
         end
     end
 
@@ -51,19 +51,19 @@ end
 if has_dispatched then
     if always_return == 1 then
         if ab_type then
-            return tonumber(redis.call("zscore", dispatched_key, device_id));
+            return redis.call("zscore", dispatched_key, device_id);
         else
-            return 1;
+            return '1';
         end
     else
-        return 0;
+        return '0';
     end
 else
     if reach_max_count then
         if (type == 1) or (max_count == -1) then
-            return 1;
+            return '1';
         else
-            return 0;
+            return '0';
         end
     else
         if ab_type then
@@ -78,10 +78,10 @@ else
                 end
             end
             redis.call("zadd", dispatched_key, min_score, device_id);
-            return min_score + 1;
+            return tostring(min_score + 1);
         else
             redis.call("sadd", dispatched_key, device_id);
-            return 1;
+            return '1';
         end
     end
 end
