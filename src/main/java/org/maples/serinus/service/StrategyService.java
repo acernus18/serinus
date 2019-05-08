@@ -11,6 +11,7 @@ import org.maples.serinus.utility.SerinusHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +36,7 @@ public class StrategyService {
         return strategy;
     }
 
+    @Transactional
     public void saveStrategy(SerinusStrategy strategy) {
         if (StringUtils.isAnyBlank(strategy.getProduct(), strategy.getTitle())) {
             return;
@@ -77,6 +79,7 @@ public class StrategyService {
         }
     }
 
+    @Transactional
     public Map<String, Map<String, List<SerinusStrategy>>> getSerinusStrategyMap() {
         Map<String, Map<String, List<SerinusStrategy>>> result = new HashMap<>();
         List<SerinusStrategy> serinusStrategies = strategyMapper.selectAll();

@@ -1,42 +1,56 @@
 package org.maples.serinus.service;
 
+import org.maples.serinus.config.DataSourceConfig;
+import org.maples.serinus.repository.SerinusStrategyMapper;
 import org.maples.serinus.utility.DataSourceHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.HashMap;
 
 @Service
-public class RoutingSourceService extends AbstractRoutingDataSource {
-
-    private AtomicInteger count = new AtomicInteger(0);
+public class RouteSourceService extends AbstractRoutingDataSource {
 
     @Autowired
-    private DataSource dataSource;
+    private DataSourceProperties primaryProperties;
+
+    @Autowired
+    private SerinusStrategyMapper strategyMapper;
 
     @PostConstruct
     public void postConstruct() {
-        System.out.println();
+        DataSource primary = primaryProperties.initializeDataSourceBuilder().build();
+        this.setDefaultTargetDataSource(primary);
+
+        HashMap<Object, Object> dataSources = new HashMap<>();
+
+        dataSources.put(DataSourceHelper.READ, primary);
+        dataSources.put(DataSourceHelper.WRITE, primary);
+        this.setTargetDataSources(dataSources);
     }
 
 
-    // @Override
+    @Override
     protected Object determineCurrentLookupKey() {
         String typeKey = DataSourceHelper.getReadOrWrite();
 
         if (typeKey == null) {
-            throw new NullPointerException("数据库路由时，决定使用哪个数据库源类型不能为空...");
+            return DataSourceHelper.WRITE;
         }
 
         if (typeKey.equals(DataSourceHelper.WRITE)) {
             return DataSourceHelper.WRITE;
         }
 
-        int number = count.getAndAdd(1);
-        int lookupKey = number % 10;
-        return DataSourceHelper.READ + (lookupKey + 1);
+        return DataSourceHelper.READ;
+    }
+
+    @DataSourceConfig.Slave
+    public void testRead() {
+        strategyMapper.selectAll();
     }
 }

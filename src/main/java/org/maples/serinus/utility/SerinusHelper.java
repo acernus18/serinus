@@ -52,6 +52,15 @@ public class SerinusHelper {
 
 
     public static boolean compare(JSONObject conditionMap, Map<String, String> parameters) {
+
+        if (conditionMap == null) {
+            return true;
+        }
+
+        if (parameters == null) {
+            return false;
+        }
+
         for (String key : conditionMap.keySet()) {
             String value = parameters.get(key);
             if (value == null) {
