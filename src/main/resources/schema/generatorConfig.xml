@@ -43,7 +43,11 @@
         <!--<table tableName="tb_serinus_permission" domainObjectName="SerinusPermission">-->
         <!--    <generatedKey column="id" sqlStatement="JDBC"/>-->
         <!--</table>-->
-        <table tableName="tb_serinus_strategy" domainObjectName="SerinusStrategy">
+        <!--<table tableName="tb_serinus_strategy" domainObjectName="SerinusStrategy">-->
+        <!--    <generatedKey column="uuid" sqlStatement="JDBC"/>-->
+        <!--</table>-->
+
+        <table tableName="tb_strategy_history" domainObjectName="StrategyHistory">
             <generatedKey column="uuid" sqlStatement="JDBC"/>
         </table>
     </context>

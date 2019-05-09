@@ -54,3 +54,38 @@ create table if not exists `tb_serinus_strategy`
     `order_in_product` int          not null
 ) engine = Innodb
   default charset `utf8mb4`;
+
+create table if not exists `tb_strategy_history`
+(
+    `uuid`          varchar(24)  not null primary key,
+    `product`       varchar(255) not null,
+    `strategy_uuid` varchar(24)  not null,
+    `operator_id`   int          not null,
+    `inspector_id`  int          not null,
+    `time`          datetime     not null,
+    `value_before`  text         not null,
+    `value_after`   text         not null,
+    `flag`          int          not null
+) engine = Innodb
+  default charset `utf8mb4`;
+
+create table if not exists `tb_system_process`
+(
+    `id`         int          not null primary key auto_increment,
+    `sponsor_id` int          not null,
+    `type`       int          not null,
+    `content`    varchar(255) not null,
+    `status`     int          not null
+) engine = Innodb
+  default charset `utf8mb4`;
+
+create table if not exists `tb_strategy_process`
+(
+    `id`            int          not null primary key auto_increment,
+    `product`       varchar(255) not null,
+    `strategy_uuid` varchar(24)  not null,
+    `type`          int          not null,
+    `history_id`    int          not null,
+    `status`        int          not null
+) engine = Innodb
+  default charset `utf8mb4`;

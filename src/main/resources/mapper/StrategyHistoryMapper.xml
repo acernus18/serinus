@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.maples.serinus.repository.StrategyHistoryMapper">
+    <resultMap id="BaseResultMap" type="org.maples.serinus.model.StrategyHistory">
+        <id column="uuid" jdbcType="VARCHAR" property="uuid"/>
+        <result column="product" jdbcType="VARCHAR" property="product"/>
+        <result column="strategy_uuid" jdbcType="VARCHAR" property="strategyUuid"/>
+        <result column="operator_id" jdbcType="INTEGER" property="operatorId"/>
+        <result column="inspector_id" jdbcType="INTEGER" property="inspectorId"/>
+        <result column="time" jdbcType="TIMESTAMP" property="time"/>
+        <result column="flag" jdbcType="INTEGER" property="flag"/>
+        <result column="value_before" jdbcType="LONGVARCHAR" property="valueBefore"/>
+        <result column="value_after" jdbcType="LONGVARCHAR" property="valueAfter"/>
+    </resultMap>
+</mapper>
