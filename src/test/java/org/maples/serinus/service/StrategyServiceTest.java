@@ -33,6 +33,7 @@ public class StrategyServiceTest {
         strategy.setAlwaysReturn(false);
         strategy.setPresetType(0);
         strategy.setOrderInProduct(1);
+        strategy.setEnabled(true);
 
         strategyService.saveStrategy(strategy);
 
