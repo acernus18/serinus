@@ -1,14 +1,16 @@
-package org.maples.serinus.service;
+package org.maples.serinus.component;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.maples.serinus.model.SerinusRole;
 import org.maples.serinus.model.SerinusUser;
 import org.maples.serinus.model.UserRole;
@@ -23,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-public class RealmService extends AuthorizingRealm {
+public class SecurityRealm extends AuthorizingRealm {
     private static final boolean ENABLE = false;
     private static final String SYSTEM_ADMIN = "system_admin";
     private static final String USER_SUFFIX = "_user";
@@ -37,6 +39,11 @@ public class RealmService extends AuthorizingRealm {
     @Autowired
     private UserRoleMapper userRoleMapper;
 
+    @Autowired
+    public SecurityRealm(CredentialsMatcher credentialsMatcher) {
+        this.setCredentialsMatcher(credentialsMatcher);
+    }
+
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 
@@ -47,13 +54,19 @@ public class RealmService extends AuthorizingRealm {
             throw new UnknownAccountException("Invalid principal");
         }
 
-        return new SimpleAuthenticationInfo(principal, serinusUser.getCredential(), this.getName());
+        if (serinusUser.getStatus() != null && serinusUser.getStatus() != 0) {
+            throw new LockedAccountException("This Account has been prohibit");
+        }
+
+        ByteSource salt = ByteSource.Util.bytes(principal);
+        return new SimpleAuthenticationInfo(principal, serinusUser.getCredential(), salt, getName());
     }
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         String principal = (String) principals.getPrimaryPrincipal();
         SerinusUser serinusUser = userMapper.selectOneByPrincipal(principal);
+
         List<UserRole> userRoles = userRoleMapper.selectByUserId(serinusUser.getId());
 
         Set<String> roles = new HashSet<>();

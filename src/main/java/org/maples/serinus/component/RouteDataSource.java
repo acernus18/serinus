@@ -1,4 +1,4 @@
-package org.maples.serinus.service;
+package org.maples.serinus.component;
 
 import org.maples.serinus.utility.DataSourceHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 
 @Service
-public class RouteSourceService extends AbstractRoutingDataSource {
+public class RouteDataSource extends AbstractRoutingDataSource {
 
     @Autowired
     private DataSourceProperties primaryProperties;

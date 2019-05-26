@@ -7,8 +7,8 @@ import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
-import org.maples.serinus.service.RealmService;
-import org.maples.serinus.service.SessionService;
+import org.maples.serinus.component.RedisSessionDAO;
+import org.maples.serinus.component.SecurityRealm;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,10 +23,10 @@ import java.util.Map;
 public class SecurityConfig {
 
     @Autowired
-    private SessionService sessionService;
+    private RedisSessionDAO sessionDAO;
 
     @Autowired
-    private RealmService realmService;
+    private SecurityRealm realm;
 
     @Bean(name = "lifecycleBeanPostProcessor")
     public static LifecycleBeanPostProcessor getLifecycleBeanPostProcessor() {
@@ -44,7 +44,7 @@ public class SecurityConfig {
     @Bean
     public DefaultWebSessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        sessionManager.setSessionDAO(sessionService);
+        sessionManager.setSessionDAO(sessionDAO);
         return sessionManager;
     }
 
@@ -52,7 +52,7 @@ public class SecurityConfig {
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
-        shiroFilterFactoryBean.setLoginUrl("/passport/login/");
+        shiroFilterFactoryBean.setLoginUrl("/health/login/");
         shiroFilterFactoryBean.setSuccessUrl("/index");
         shiroFilterFactoryBean.setUnauthorizedUrl("/error/403");
 
@@ -72,7 +72,7 @@ public class SecurityConfig {
 
     @Bean
     public DefaultWebSecurityManager securityManager(DefaultWebSessionManager sessionManager) {
-        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager(realmService);
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager(realm);
         securityManager.setSessionManager(sessionManager);
         SecurityUtils.setSecurityManager(securityManager);
         return securityManager;

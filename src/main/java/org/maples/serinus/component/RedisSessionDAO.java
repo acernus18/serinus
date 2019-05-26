@@ -1,7 +1,8 @@
-package org.maples.serinus.service;
+package org.maples.serinus.component;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.cache.AbstractCacheManager;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
@@ -24,8 +25,9 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class SessionService extends CachingSessionDAO {
+public class RedisSessionDAO extends CachingSessionDAO {
     private static final String SESSION_PREFIX = "SESSION_";
+    private static final String USER_SESSION_KEY = "user";
 
     @Autowired
     private StringRedisTemplate redisTemplate;
@@ -50,7 +52,11 @@ public class SessionService extends CachingSessionDAO {
         return (Session) ois.readObject();
     }
 
-    public SessionService() {
+    public void addAttribute(String value) {
+        SecurityUtils.getSubject().getSession().setAttribute(USER_SESSION_KEY, value);
+    }
+
+    public RedisSessionDAO() {
         super.setCacheManager(new AbstractCacheManager() {
             @Override
             protected Cache<Serializable, Session> createCache(String name) throws CacheException {

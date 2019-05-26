@@ -14,5 +14,10 @@ public class HealthController {
         model.addAttribute("message", "database");
         return "health";
     }
+
+    @GetMapping("/login")
+    public String login(Model model) {
+        return "login";
+    }
     
 }

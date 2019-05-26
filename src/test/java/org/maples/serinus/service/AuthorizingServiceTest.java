@@ -7,11 +7,8 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.junit.Test;
 import org.maples.serinus.SerinusApplicationTests;
-import org.maples.serinus.config.DataSourceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
-
-import static org.junit.Assert.*;
 
 @Slf4j
 public class AuthorizingServiceTest extends SerinusApplicationTests {
