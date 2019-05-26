@@ -15,6 +15,5 @@ public class RouteSourceServiceTest {
 
     @Test
     public void test() {
-        routeSourceService.testRead();
     }
 }

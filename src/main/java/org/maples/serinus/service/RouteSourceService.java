@@ -1,7 +1,5 @@
 package org.maples.serinus.service;
 
-import org.maples.serinus.config.DataSourceConfig;
-import org.maples.serinus.repository.SerinusStrategyMapper;
 import org.maples.serinus.utility.DataSourceHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -17,9 +15,6 @@ public class RouteSourceService extends AbstractRoutingDataSource {
 
     @Autowired
     private DataSourceProperties primaryProperties;
-
-    @Autowired
-    private SerinusStrategyMapper strategyMapper;
 
     @PostConstruct
     public void postConstruct() {
@@ -47,10 +42,5 @@ public class RouteSourceService extends AbstractRoutingDataSource {
         }
 
         return DataSourceHelper.READ;
-    }
-
-    @DataSourceConfig.Slave
-    public void testRead() {
-        strategyMapper.selectAll();
     }
 }

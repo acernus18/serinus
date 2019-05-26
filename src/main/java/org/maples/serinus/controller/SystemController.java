@@ -32,7 +32,7 @@ public class SystemController {
         SerinusUser serinusUser = new SerinusUser();
         serinusUser.setPrincipal(principal);
         serinusUser.setCredential(credential);
-        serinusUser.setName(name);
+        serinusUser.setNickname(name);
         serinusUser.setEmail(email);
 
         log.info("Receive add user: \n {}", JSON.toJSONString(serinusUser, true));
@@ -58,18 +58,18 @@ public class SystemController {
     }
 
     @PostMapping("/permission/{roleName}/add")
-    public String addSerinusPermission(@PathVariable String roleName, String principal, int level) {
-        log.info("Receive add permission {} to {}, level {}", roleName, principal, level);
-        permissionService.addSerinusPermission(principal, roleName, level);
+    public String addUserRole(@PathVariable String roleName, String principal) {
+        log.info("Receive add permission {} to {}", roleName, principal);
+        permissionService.addUserRole(principal, roleName);
         log.info("Success");
 
         return "redirect:/system/dashboard";
     }
 
     @GetMapping("/permission/{roleName}/delete/{principal}")
-    public String deleteSerinusPermission(@PathVariable("principal") String principal,
-                                          @PathVariable("roleName") String roleName) {
-        permissionService.deleteSerinusPermission(principal, roleName);
+    public String deleteUserRole(@PathVariable("principal") String principal,
+                                 @PathVariable("roleName") String roleName) {
+        permissionService.deleteUserRole(principal, roleName);
         return "redirect:/system/dashboard";
     }
 }

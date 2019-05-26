@@ -20,7 +20,7 @@
             <tr>
                 <td>${user.principal}</td>
                 <td>${user.credential}</td>
-                <td>${user.name}</td>
+                <td>${user.nickname}</td>
                 <td>${user.email}</td>
             </tr>
         </#list>

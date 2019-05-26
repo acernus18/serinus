@@ -9,12 +9,12 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.maples.serinus.model.SerinusPermission;
 import org.maples.serinus.model.SerinusRole;
 import org.maples.serinus.model.SerinusUser;
-import org.maples.serinus.repository.SerinusPermissionMapper;
+import org.maples.serinus.model.UserRole;
 import org.maples.serinus.repository.SerinusRoleMapper;
 import org.maples.serinus.repository.SerinusUserMapper;
+import org.maples.serinus.repository.UserRoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,7 +35,7 @@ public class RealmService extends AuthorizingRealm {
     private SerinusRoleMapper roleMapper;
 
     @Autowired
-    private SerinusPermissionMapper permissionMapper;
+    private UserRoleMapper userRoleMapper;
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
@@ -54,17 +54,13 @@ public class RealmService extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         String principal = (String) principals.getPrimaryPrincipal();
         SerinusUser serinusUser = userMapper.selectOneByPrincipal(principal);
-        List<SerinusPermission> permissions = permissionMapper.selectByUserId(serinusUser.getId());
+        List<UserRole> userRoles = userRoleMapper.selectByUserId(serinusUser.getId());
 
         Set<String> roles = new HashSet<>();
-        for (SerinusPermission permission : permissions) {
-            SerinusRole role = roleMapper.selectByPrimaryKey(permission.getRoleId());
+        for (UserRole userRole : userRoles) {
+            SerinusRole role = roleMapper.selectByPrimaryKey(userRole.getRoleId());
 
-            if (permission.getPermissionLevel() == 0) {
-                roles.add(role.getName());
-            } else if (permission.getPermissionLevel() == 1) {
-                roles.add(role.getName() + USER_SUFFIX);
-            }
+            roles.add(role.getName());
         }
         return new SimpleAuthorizationInfo(roles);
     }

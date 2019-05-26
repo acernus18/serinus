@@ -1,18 +1,15 @@
 package org.maples.serinus.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.maples.serinus.model.SerinusPermission;
 import org.maples.serinus.model.SerinusRole;
 import org.maples.serinus.model.SerinusUser;
-import org.maples.serinus.repository.SerinusPermissionMapper;
+import org.maples.serinus.model.UserRole;
 import org.maples.serinus.repository.SerinusRoleMapper;
 import org.maples.serinus.repository.SerinusUserMapper;
+import org.maples.serinus.repository.UserRoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,16 +21,13 @@ import java.util.Map;
 public class PermissionService {
 
     @Autowired
-    private DataSourceTransactionManager transactionManager;
-
-    @Autowired
     private SerinusUserMapper userMapper;
 
     @Autowired
     private SerinusRoleMapper roleMapper;
 
     @Autowired
-    private SerinusPermissionMapper permissionMapper;
+    private UserRoleMapper userRoleMapper;
 
 
     @Transactional
@@ -52,33 +46,21 @@ public class PermissionService {
     }
 
     @Transactional
-    public void addSerinusPermission(String principal, String roleName, int level) {
+    public void addUserRole(String principal, String roleName) {
+        SerinusUser user = userMapper.selectOneByPrincipal(principal);
+        SerinusRole role = roleMapper.selectByRoleName(roleName);
 
-        TransactionStatus transaction = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        if (role != null && user != null) {
+            UserRole userRole = userRoleMapper.selectOneByUserIdAndRoleId(user.getId(), role.getId());
+            if (userRole == null) {
 
-        try {
-            SerinusUser user = userMapper.selectOneByPrincipal(principal);
-            SerinusRole role = roleMapper.selectByRoleName(roleName);
-
-            if (role != null && user != null) {
-                SerinusPermission permission = permissionMapper.selectOneByUserIdAndRoleId(user.getId(), role.getId());
-                if (permission == null) {
-
-                    permission = new SerinusPermission();
-                    permission.setUserId(user.getId());
-                    permission.setRoleId(role.getId());
-                    permission.setPermissionLevel(level);
-                    permission.setStatus(0);
-                    permissionMapper.insert(permission);
-                }
+                userRole = new UserRole();
+                userRole.setUserId(user.getId());
+                userRole.setRoleId(role.getId());
+                userRole.setStatus(0);
+                userRoleMapper.insert(userRole);
             }
-
-            transactionManager.commit(transaction);
-        } catch (Throwable e) {
-            log.info("Rollback because {}", e.getLocalizedMessage());
-            transactionManager.rollback(transaction);
         }
-
     }
 
     @Transactional
@@ -91,7 +73,7 @@ public class PermissionService {
     }
 
     @Transactional
-    public void deleteSerinusPermission(String principal, String roleName) {
+    public void deleteUserRole(String principal, String roleName) {
         SerinusUser user = userMapper.selectOneByPrincipal(principal);
         SerinusRole role = roleMapper.selectByRoleName(roleName);
 
@@ -99,9 +81,9 @@ public class PermissionService {
             return;
         }
 
-        SerinusPermission permission = permissionMapper.selectOneByUserIdAndRoleId(user.getId(), role.getId());
-        if (permission != null) {
-            permissionMapper.deleteByPrimaryKey(permission.getId());
+        UserRole userRole = userRoleMapper.selectOneByUserIdAndRoleId(user.getId(), role.getId());
+        if (userRole != null) {
+            userRoleMapper.deleteByPrimaryKey(userRole.getId());
         }
     }
 
@@ -120,8 +102,8 @@ public class PermissionService {
         for (SerinusRole serinusRole : serinusRoles) {
             List<SerinusUser> users = new ArrayList<>();
 
-            List<SerinusPermission> permissions = permissionMapper.selectByRoleId(serinusRole.getId());
-            for (SerinusPermission permission : permissions) {
+            List<UserRole> userRoles = userRoleMapper.selectByRoleId(serinusRole.getId());
+            for (UserRole permission : userRoles) {
                 users.add(userMapper.selectByPrimaryKey(permission.getUserId()));
             }
 

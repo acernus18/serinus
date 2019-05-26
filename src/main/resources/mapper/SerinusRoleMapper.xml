@@ -4,9 +4,16 @@
     <resultMap id="BaseResultMap" type="org.maples.serinus.model.SerinusRole">
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="available" jdbcType="BIT" property="available"/>
         <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
+
     <select id="selectByRoleName" resultMap="BaseResultMap">
-        select `id`, `name`, `status` from tb_serinus_role where `name` = '${roleName}'
+        select `id`, `name`, `status`
+        from tb_serinus_role
+        where `name` = '${roleName}'
     </select>
 </mapper>

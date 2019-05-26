@@ -3,25 +3,33 @@ package org.maples.serinus.model;
 import lombok.Data;
 
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
-@Table(name = "tb_serinus_role")
-public class SerinusRole {
+@Table(name = "tb_serinus_resources")
+public class SerinusResources {
     @Id
     @GeneratedValue(generator = "JDBC")
     private Integer id;
 
     private String name;
 
-    private String description;
+    private String type;
+
+    private String url;
+
+    private String permission;
+
+    @Column(name = "parent_id")
+    private Long parentId;
+
+    private Integer sort;
+
+    private Boolean external;
 
     private Boolean available;
 
-    private Integer status;
+    private String icon;
 
     @Column(name = "create_time")
     private Date createTime;

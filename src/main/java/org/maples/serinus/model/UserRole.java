@@ -3,23 +3,20 @@ package org.maples.serinus.model;
 import lombok.Data;
 
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
-@Table(name = "tb_serinus_role")
-public class SerinusRole {
+@Table(name = "tb_serinus_user_role")
+public class UserRole {
     @Id
     @GeneratedValue(generator = "JDBC")
     private Integer id;
 
-    private String name;
+    @Column(name = "user_id")
+    private Integer userId;
 
-    private String description;
-
-    private Boolean available;
+    @Column(name = "role_id")
+    private Integer roleId;
 
     private Integer status;
 
