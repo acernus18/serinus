@@ -24,7 +24,7 @@
 
 
     <select id="selectOneByPrincipal" resultMap="BaseResultMap">
-        select `id`, `principal`, `credential`, `status`
+        select `id`, `principal`, `credential`, `status`, `login_count`
         from `tb_serinus_user`
         <where>
             `principal` = '${principal}'

@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class RedisSessionDAO extends CachingSessionDAO {
+public class SessionAccessor extends CachingSessionDAO {
     private static final String SESSION_PREFIX = "SESSION_";
     private static final String USER_SESSION_KEY = "user";
 
@@ -56,7 +56,7 @@ public class RedisSessionDAO extends CachingSessionDAO {
         SecurityUtils.getSubject().getSession().setAttribute(USER_SESSION_KEY, value);
     }
 
-    public RedisSessionDAO() {
+    public SessionAccessor() {
         super.setCacheManager(new AbstractCacheManager() {
             @Override
             protected Cache<Serializable, Session> createCache(String name) throws CacheException {
@@ -73,6 +73,7 @@ public class RedisSessionDAO extends CachingSessionDAO {
 
             // TODO: Handle session timeout;
 
+            log.info("Update session to Redis, key = {}", sessionKey);
             redisTemplate.opsForValue().set(sessionKey, sessionValue, 10, TimeUnit.MINUTES);
         } catch (IOException e) {
             log.info(e.getLocalizedMessage());
@@ -82,6 +83,7 @@ public class RedisSessionDAO extends CachingSessionDAO {
 
     @Override
     protected void doDelete(Session session) {
+        log.info("Delete session from Redis, key = {}", session.getId());
         redisTemplate.delete(SESSION_PREFIX + session.getId());
     }
 
@@ -89,7 +91,20 @@ public class RedisSessionDAO extends CachingSessionDAO {
     protected Serializable doCreate(Session session) {
         Serializable sessionId = generateSessionId(session);
         assignSessionId(session, sessionId);
-        this.doUpdate(session);
+
+        log.info("Create session to Redis, key = {}", session.getId());
+
+        try {
+            String sessionKey = SESSION_PREFIX + session.getId();
+            String sessionValue = serializeSession(session);
+
+            // TODO: Handle session timeout;
+
+            redisTemplate.opsForValue().set(sessionKey, sessionValue, 10, TimeUnit.MINUTES);
+        } catch (IOException e) {
+            log.info(e.getLocalizedMessage());
+            throw new RuntimeException("Serializing fail");
+        }
         return sessionId;
     }
 
@@ -97,6 +112,7 @@ public class RedisSessionDAO extends CachingSessionDAO {
     protected Session doReadSession(Serializable sessionId) {
         Session result;
         try {
+            log.info("Read session from Redis, key = {}", sessionId);
             String sessionValue = redisTemplate.opsForValue().get(SESSION_PREFIX + sessionId);
             result = deserializeSession(sessionValue);
         } catch (IOException | ClassNotFoundException e) {

@@ -4,13 +4,13 @@ import org.maples.serinus.utility.DataSourceHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.util.HashMap;
 
-@Service
+@Component
 public class RouteDataSource extends AbstractRoutingDataSource {
 
     @Autowired

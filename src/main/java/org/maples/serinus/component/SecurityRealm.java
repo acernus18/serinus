@@ -1,5 +1,6 @@
 package org.maples.serinus.component;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -18,13 +19,14 @@ import org.maples.serinus.repository.SerinusRoleMapper;
 import org.maples.serinus.repository.SerinusUserMapper;
 import org.maples.serinus.repository.UserRoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@RestController
+@Slf4j
+@Component
 public class SecurityRealm extends AuthorizingRealm {
     private static final boolean ENABLE = false;
     private static final String SYSTEM_ADMIN = "system_admin";
@@ -54,7 +56,7 @@ public class SecurityRealm extends AuthorizingRealm {
             throw new UnknownAccountException("Invalid principal");
         }
 
-        if (serinusUser.getStatus() != null && serinusUser.getStatus() != 0) {
+        if (serinusUser.getStatus() != null && serinusUser.getStatus() != 1) {
             throw new LockedAccountException("This Account has been prohibit");
         }
 
@@ -67,6 +69,8 @@ public class SecurityRealm extends AuthorizingRealm {
         String principal = (String) principals.getPrimaryPrincipal();
         SerinusUser serinusUser = userMapper.selectOneByPrincipal(principal);
 
+        log.info("Looking for AuthorizationInfo for [{}]", principal);
+
         List<UserRole> userRoles = userRoleMapper.selectByUserId(serinusUser.getId());
 
         Set<String> roles = new HashSet<>();
@@ -75,6 +79,8 @@ public class SecurityRealm extends AuthorizingRealm {
 
             roles.add(role.getName());
         }
+
+        log.info("Found = {}", roles);
         return new SimpleAuthorizationInfo(roles);
     }
 }

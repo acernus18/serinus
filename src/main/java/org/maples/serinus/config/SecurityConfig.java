@@ -1,16 +1,18 @@
 package org.maples.serinus.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
-import org.maples.serinus.component.RedisSessionDAO;
+import org.maples.serinus.component.SessionAccessor;
 import org.maples.serinus.component.SecurityRealm;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -23,13 +25,21 @@ import java.util.Map;
 public class SecurityConfig {
 
     @Autowired
-    private RedisSessionDAO sessionDAO;
+    private SessionAccessor sessionDAO;
 
     @Autowired
     private SecurityRealm realm;
 
-    @Bean(name = "lifecycleBeanPostProcessor")
-    public static LifecycleBeanPostProcessor getLifecycleBeanPostProcessor() {
+    @Bean
+    public MethodInvokingFactoryBean methodInvokingFactoryBean(SecurityManager securityManager){
+        MethodInvokingFactoryBean bean = new MethodInvokingFactoryBean();
+        bean.setStaticMethod("org.apache.shiro.SecurityUtils.setSecurityManager");
+        bean.setArguments(securityManager);
+        return bean;
+    }
+
+    @Bean
+    public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
         return new LifecycleBeanPostProcessor();
     }
 
@@ -51,30 +61,38 @@ public class SecurityConfig {
     @Bean
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         shiroFilterFactoryBean.setLoginUrl("/health/login/");
-        shiroFilterFactoryBean.setSuccessUrl("/index");
-        shiroFilterFactoryBean.setUnauthorizedUrl("/error/403");
+        shiroFilterFactoryBean.setSuccessUrl("/health/index");
 
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
 
-        filterChainDefinitionMap.put("/passport/logout", "logout");
+        filterChainDefinitionMap.put("/webjars/**", "anon");
+        filterChainDefinitionMap.put("/passport/logout", "anon");
         filterChainDefinitionMap.put("/passport/login", "anon");
-        filterChainDefinitionMap.put("/passport/signin", "anon");
-        filterChainDefinitionMap.put("/favicon.ico", "anon");
-        filterChainDefinitionMap.put("/error", "anon");
-        filterChainDefinitionMap.put("/assets/**", "anon");
-        filterChainDefinitionMap.put("/**", "user");
+
+        filterChainDefinitionMap.put("/**", "authc");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
+
         return shiroFilterFactoryBean;
     }
 
     @Bean
     public DefaultWebSecurityManager securityManager(DefaultWebSessionManager sessionManager) {
-        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager(realm);
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+
         securityManager.setSessionManager(sessionManager);
-        SecurityUtils.setSecurityManager(securityManager);
+        securityManager.setRealm(realm);
+
         return securityManager;
+    }
+
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
+        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
+        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
+        return authorizationAttributeSourceAdvisor;
     }
 }
