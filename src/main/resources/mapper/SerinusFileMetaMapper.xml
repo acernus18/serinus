@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.maples.serinus.repository.SerinusFileMetaMapper">
+    <resultMap id="BaseResultMap" type="org.maples.serinus.model.SerinusFileMeta">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="filename" jdbcType="VARCHAR" property="filename"/>
+        <result column="extension" jdbcType="VARCHAR" property="extension"/>
+        <result column="md5" jdbcType="VARCHAR" property="md5"/>
+        <result column="uploader" jdbcType="VARCHAR" property="uploader"/>
+        <result column="group_name" jdbcType="VARCHAR" property="groupName"/>
+        <result column="remote_filename" jdbcType="VARCHAR" property="remoteFilename"/>
+        <result column="source_ip_addr" jdbcType="VARCHAR" property="sourceIpAddr"/>
+        <result column="file_size" jdbcType="BIGINT" property="fileSize"/>
+        <result column="create_timestamp" jdbcType="TIMESTAMP" property="createTimestamp"/>
+        <result column="crc32" jdbcType="BIGINT" property="crc32"/>
+    </resultMap>
+</mapper>

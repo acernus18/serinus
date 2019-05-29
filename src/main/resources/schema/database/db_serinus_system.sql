@@ -157,3 +157,21 @@ create table if not exists `tb_strategy_process`
     `status`        int          not null
 ) engine = Innodb
   default charset `utf8mb4`;
+
+-- FastDFS
+
+create table if not exists `tb_serinus_file_meta`
+(
+    `id`               int          not null primary key auto_increment,
+    `filename`         varchar(255) not null,
+    `extension`        varchar(255) not null,
+    `md5`              varchar(255) not null,
+    `uploader`         varchar(255) not null,
+    `group_name`       varchar(255) not null,
+    `remote_filename`  varchar(255) not null,
+    `source_ip_addr`   varchar(255) not null,
+    `file_size`        bigint       not null,
+    `create_timestamp` datetime     not null,
+    `crc32`            bigint       not null
+) engine = Innodb
+  default charset `utfmb4`;

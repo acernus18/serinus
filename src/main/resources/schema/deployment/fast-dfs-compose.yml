@@ -1,0 +1,18 @@
+version: '3'
+services:
+  tracker:
+    network_mode: host
+    image: morunchang/fastdfs
+    container_name: tracker
+    command: sh tracker.sh
+
+  storage:
+    network_mode: host
+    image: morunchang/fastdfs
+    container_name: storage
+    environment:
+      GROUP_NAME: group0
+      TRACKER_IP: 120.78.175.39:22122
+    command: sh storage.sh
+    depends_on:
+      - tracker

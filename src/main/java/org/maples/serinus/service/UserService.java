@@ -1,6 +1,7 @@
 package org.maples.serinus.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
 import org.maples.serinus.model.SerinusUser;
 import org.maples.serinus.repository.SerinusUserMapper;
 import org.maples.serinus.utility.RequestHelper;
@@ -30,5 +31,10 @@ public class UserService {
         }
 
         return user;
+    }
+
+    public SerinusUser getCurrentSerinusUser() {
+        Object principal = SecurityUtils.getSubject().getPrincipal();
+        return userMapper.selectOneByPrincipal((String) principal);
     }
 }

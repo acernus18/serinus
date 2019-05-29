@@ -1,4 +1,4 @@
-package org.maples.serinus.controller;
+package org.maples.serinus.controller.page;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
