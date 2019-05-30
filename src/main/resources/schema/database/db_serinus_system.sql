@@ -175,3 +175,24 @@ create table if not exists `tb_serinus_file_meta`
     `crc32`            bigint       not null
 ) engine = Innodb
   default charset `utfmb4`;
+
+create table `tb_serinus_config`
+(
+    `id`            int unsigned        not null auto_increment comment 'config id',
+    `c_key`         varchar(64)         not null default '' comment '键值',
+    `c_md5`         varchar(64)         not null default '' comment '键值hash',
+    `value`         mediumtext          not null comment '內容',
+    `value_history` mediumtext          not null comment '內容history',
+    `json_value`    text                not null comment 'json format',
+    `update_time`   int(11) unsigned    not null default '0' comment '最后更新时间',
+    `create_time`   int(11) unsigned    not null default '0' comment '创建时间',
+    `op_uid`        int(11) unsigned    not null default '0' comment '最后修改者id',
+    `extra`         varchar(1024)       not null default '' comment '通用扩展信息',
+    `type`          tinyint(2) unsigned not null default '0' comment '内容格式类型, 0:ini, 1:json, 2:policy, 3:bd',
+    `note`          varchar(128)        not null comment '注释',
+    `status`        tinyint(2) unsigned not null default '0' comment '状态值',
+
+    primary key (`id`),
+    unique key `u_idx_c_key` (`c_key`)
+) engine = InnoDB
+  default charset = utf8mb4;

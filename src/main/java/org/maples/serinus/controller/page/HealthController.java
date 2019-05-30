@@ -29,5 +29,9 @@ public class HealthController {
     public Object session() {
         return SecurityUtils.getSubject().getSession();
     }
-    
+
+    @GetMapping("/file")
+    public String file() {
+        return "file/index";
+    }
 }

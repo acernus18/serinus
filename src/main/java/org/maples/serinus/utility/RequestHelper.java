@@ -7,6 +7,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 
 @Slf4j
 public class RequestHelper {
@@ -65,5 +66,18 @@ public class RequestHelper {
 
     private static boolean checkIp(String ip) {
         return !StringUtils.isEmpty(ip) && !"unknown".equalsIgnoreCase(ip);
+    }
+
+    public static String createQueryString(HttpServletRequest request) {
+
+        StringBuilder queryString = new StringBuilder();
+
+        Enumeration<String> names = request.getParameterNames();
+
+        if (names.hasMoreElements()) {
+            String name =  names.nextElement();
+            queryString.append(String.format("%s=%s", name, request.getParameter(name)));
+        }
+        return queryString.toString();
     }
 }

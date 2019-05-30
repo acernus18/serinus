@@ -80,9 +80,17 @@ public class DFSService {
         file.setSourceIpAddr(fileInfo.getSourceIpAddr());
     }
 
-    public byte[] download(SerinusFileMeta file) throws Exception {
+    public byte[] download(SerinusFileMeta file) {
         StorageClient storageClient = new StorageClient(trackerServer, storageServer);
-        return storageClient.download_file(file.getGroupName(), file.getRemoteFilename());
+
+        byte[] fileContent;
+        try {
+            fileContent = storageClient.download_file(file.getGroupName(), file.getRemoteFilename());
+        } catch (Exception e) {
+            fileContent = new byte[0];
+        }
+
+        return fileContent;
     }
 
     public void delete(SerinusFileMeta file) throws Exception {

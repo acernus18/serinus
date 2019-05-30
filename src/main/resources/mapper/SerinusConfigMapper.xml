@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.maples.serinus.repository.SerinusConfigMapper">
+    <resultMap id="BaseResultMap" type="org.maples.serinus.model.SerinusConfig">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="c_key" jdbcType="VARCHAR" property="cKey"/>
+        <result column="c_md5" jdbcType="VARCHAR" property="cMd5"/>
+        <result column="update_time" jdbcType="INTEGER" property="updateTime"/>
+        <result column="create_time" jdbcType="INTEGER" property="createTime"/>
+        <result column="op_uid" jdbcType="INTEGER" property="opUid"/>
+        <result column="extra" jdbcType="VARCHAR" property="extra"/>
+        <result column="type" jdbcType="TINYINT" property="type"/>
+        <result column="note" jdbcType="VARCHAR" property="note"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="value" jdbcType="LONGVARCHAR" property="value"/>
+        <result column="value_history" jdbcType="LONGVARCHAR" property="valueHistory"/>
+        <result column="json_value" jdbcType="LONGVARCHAR" property="jsonValue"/>
+    </resultMap>
+
+    <select id="selectAllPolicyCKeys" resultType="String">
+        select c_key
+        from `tb_serinus_config`
+        where type = 2
+    </select>
+
+    <select id="selectByKeyword" resultMap="BaseResultMap">
+        select
+        `id`, `c_key`, `c_md5`, `update_time`, `create_time`, `op_uid`, `extra`,
+        `type`, `note`, `status`, `value`, `json_value`, `value_history`
+        from
+        `tb_serinus_config`
+        <where>
+            <if test="product != null and product != ''">
+                and ckey like '${product}%'
+            </if>
+
+            <if test="word != null and word != ''">
+                and ckey like '%${word}%'
+            </if>
+        </where>
+        order by id
+    </select>
+
+    <select id="selectByKeywordWithOrder" resultMap="BaseResultMap">
+        select `id`,
+        `c_key`,
+        `c_md5`,
+        `update_time`,
+        `create_time`,
+        `op_uid`,
+        `extra`,
+        `type`,
+        `note`,
+        `status`,
+        `value`,
+        `json_value`,
+        `value_history`
+        from `tb_serinus_config`
+        <where>
+            <if test="product != null and product != ''">
+                and ckey like '${product}%'
+            </if>
+
+            <if test="word != null and word != ''">
+                and ckey like '%${word}%'
+            </if>
+
+            <if test="status != null">
+                and `status` = ${status}
+            </if>
+        </where>
+
+        <if test="orderKey != null and orderKey != ''">
+            order by `status`, ${orderKey}
+        </if>
+        <if test="orderKey == null or orderKey == ''">
+            order by `status`, update_time
+        </if>
+        <if test="!order">
+            desc
+        </if>
+    </select>
+
+    <select id="selectOneByCKey" resultMap="BaseResultMap">
+        select `id`,
+               `c_key`,
+               `c_md5`,
+               `update_time`,
+               `create_time`,
+               `op_uid`,
+               `extra`,
+               `type`,
+               `note`,
+               `status`,
+               `value`,
+               `json_value`,
+               `value_history`
+        from `tb_serinus_config`
+        where `c_key` = '${cKey}'
+        limit 1
+    </select>
+
+    <select id="selectOneNormalByCKey" resultMap="BaseResultMap">
+        select `id`,
+               `c_key`,
+               `c_md5`,
+               `update_time`,
+               `create_time`,
+               `op_uid`,
+               `extra`,
+               `type`,
+               `note`,
+               `status`,
+               `value`,
+               `json_value`,
+               `value_history`
+        from `tb_serinus_config`
+        where c_key = '${cKey}'
+          and type &lt; 2
+          and `status` = 0
+        limit 1
+    </select>
+
+    <select id="selectOnePolicyByCKey" resultMap="BaseResultMap">
+        select `id`,
+               `c_key`,
+               `c_md5`,
+               `update_time`,
+               `create_time`,
+               `op_uid`,
+               `extra`,
+               `type`,
+               `note`,
+               `status`,
+               `value`,
+               `json_value`,
+               `value_history`
+        from `tb_serinus_config`
+        where c_key = '${cKey}'
+          and type = 2
+          and `status` = 0
+        limit 1
+    </select>
+
+    <update id="updateValueWithHistoryByID">
+        update `tb_serinus_config`
+        set value = value_history
+        where id = #{id}
+    </update>
+</mapper>

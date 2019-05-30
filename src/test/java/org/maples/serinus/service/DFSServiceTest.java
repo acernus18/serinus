@@ -23,7 +23,7 @@ public class DFSServiceTest {
     @Autowired
     private DFSService dfsService;
 
-    // @Test
+    @Test
     public void upload() throws Exception {
         File file = ResourceUtils.getFile("D:\\maple\\Downloads\\TestMP4.mp4");
 
@@ -31,18 +31,12 @@ public class DFSServiceTest {
 
         SerinusFileMeta fastDFSFile = new SerinusFileMeta();
 
-        // fastDFSFile.setGroupName("group0");
-        // fastDFSFile.setRemoteFilename("M00/00/00/wKgBfVzuMmaACpsrAF0gDH_xONA245.mp4");
-
         fastDFSFile.setFilename("TestMP4");
         fastDFSFile.setExtension("mp4");
         fastDFSFile.setUploader("maples");
         fastDFSFile.setMd5("");
 
         dfsService.upload(fastDFSFile, content);
-
-        // dfsService.fetchFileInfo(fastDFSFile);
-
         log.info(JSON.toJSONString(fastDFSFile, true));
     }
 

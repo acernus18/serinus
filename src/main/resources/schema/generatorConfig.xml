@@ -61,7 +61,7 @@
         <!--    <generatedKey column="uuid" sqlStatement="JDBC"/>-->
         <!--</table>-->
 
-        <table tableName="tb_serinus_file_meta" domainObjectName="SerinusFileMeta">
+        <table tableName="tb_serinus_config" domainObjectName="SerinusConfig">
             <generatedKey column="id" sqlStatement="JDBC"/>
         </table>
     </context>

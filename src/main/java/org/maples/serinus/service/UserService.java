@@ -17,6 +17,10 @@ public class UserService {
     @Autowired
     private SerinusUserMapper userMapper;
 
+    public String getCurrentPrincipal() {
+        return (String) SecurityUtils.getSubject().getPrincipal();
+    }
+
     public SerinusUser updateUserLastLoginInfo(SerinusUser user) {
 
         if (user != null) {
@@ -31,10 +35,5 @@ public class UserService {
         }
 
         return user;
-    }
-
-    public SerinusUser getCurrentSerinusUser() {
-        Object principal = SecurityUtils.getSubject().getPrincipal();
-        return userMapper.selectOneByPrincipal((String) principal);
     }
 }
