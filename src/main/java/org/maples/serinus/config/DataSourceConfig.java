@@ -4,22 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.maples.serinus.utility.DataSourceHelper;
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.context.annotation.Bean;
+import org.maples.serinus.component.RouteDataSource;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
-import javax.sql.DataSource;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Aspect
@@ -65,10 +58,10 @@ public class DataSourceConfig {
 
         Object result;
         try {
-            DataSourceHelper.setRead();
+            RouteDataSource.setRead();
             result = point.proceed();
         } finally {
-            DataSourceHelper.setWrite();
+            RouteDataSource.setWrite();
         }
 
         return result;
