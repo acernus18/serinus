@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -38,5 +40,11 @@ public class ZKClientService {
         } catch (Exception e) {
             log.error("Subscribe channel for {}, fail for {}", path, e.getLocalizedMessage());
         }
+    }
+
+    public Map<String, String> getCurrentChannelData() {
+        Map<String, String> result = new HashMap<>();
+        nodeCaches.forEach((k, v) -> result.put(k, new String(v.getCurrentData().getData())));
+        return result;
     }
 }

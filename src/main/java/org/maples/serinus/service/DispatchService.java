@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.maples.serinus.model.SerinusStrategy;
 import org.maples.serinus.utility.SerinusHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.ReturnType;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -29,7 +28,6 @@ public class DispatchService {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-    @Value("${script.dispatch.sha}")
     private String dispatchSHA;
 
     @PostConstruct

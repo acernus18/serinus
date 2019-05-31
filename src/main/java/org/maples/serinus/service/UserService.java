@@ -7,6 +7,7 @@ import org.maples.serinus.repository.SerinusUserMapper;
 import org.maples.serinus.utility.RequestHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -21,8 +22,8 @@ public class UserService {
         return (String) SecurityUtils.getSubject().getPrincipal();
     }
 
-    public SerinusUser updateUserLastLoginInfo(SerinusUser user) {
-
+    @Transactional
+    public void updateUserLastLoginInfo(SerinusUser user) {
         if (user != null) {
             SerinusUser selective = new SerinusUser();
 
@@ -33,7 +34,5 @@ public class UserService {
 
             userMapper.updateByPrimaryKeySelective(user);
         }
-
-        return user;
     }
 }

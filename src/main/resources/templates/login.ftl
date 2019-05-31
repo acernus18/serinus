@@ -3,19 +3,6 @@
     <title>Login</title>
 
     <script src="/webjars/jquery/3.0.0/jquery.min.js"></script>
-    <script>
-        function getFormData(pair) {
-            let result = {};
-
-            $.map(pair, function (item) {
-                result[item['name']] = item['value'];
-            });
-
-            return result;
-        }
-
-        // getFormData($('#login-form').serializeArray());
-    </script>
 </head>
 <body>
 <form action="/passport/login" method="POST" id="login-form">

@@ -1,7 +1,6 @@
 package org.maples.serinus.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +24,7 @@ public class StrategyService {
     @Autowired
     private SerinusStrategyMapper strategyMapper;
 
+    @Transactional
     public SerinusStrategy getStrategyByUUID(String uuid) {
         SerinusStrategy strategy = strategyMapper.selectByPrimaryKey(uuid);
 
@@ -42,41 +42,31 @@ public class StrategyService {
             return;
         }
 
-        boolean formatValidation = false;
-        JSONObject filter = null;
-        JSONObject content = null;
-        try {
-            filter = JSON.parseObject(strategy.getFilter());
-            content = JSON.parseObject(strategy.getContent());
-            formatValidation = true;
-        } catch (JSONException e) {
-            log.info(e.getLocalizedMessage());
-        }
+        JSONObject filter = JSON.parseObject(strategy.getFilter());
+        JSONObject content = JSON.parseObject(strategy.getContent());
 
-        if (formatValidation && filter != null && content != null) {
-            strategy.setFilter(SerinusHelper.base64Encode(filter.toJSONString()));
-            strategy.setContent(SerinusHelper.base64Encode(content.toJSONString()));
+        strategy.setFilter(SerinusHelper.base64Encode(filter.toJSONString()));
+        strategy.setContent(SerinusHelper.base64Encode(content.toJSONString()));
 
-            if (!StringUtils.isEmpty(strategy.getUuid())) {
-                // Confirm that an object with same id existing in database;
-                SerinusStrategy dbObject = strategyMapper.selectByPrimaryKey(strategy.getUuid());
-                if (dbObject != null) {
-                    // Confirm that two object has same title and product
-                    boolean identity = dbObject.getProduct().equals(strategy.getProduct());
-                    identity = identity && dbObject.getTitle().equals(strategy.getTitle());
-                    if (identity) {
-                        log.info("Update strategy, id = {}", strategy.getUuid());
-                        BeanUtils.copyProperties(strategy, dbObject);
-                        strategyMapper.updateByPrimaryKey(dbObject);
-                        return;
-                    }
+        if (!StringUtils.isEmpty(strategy.getUuid())) {
+            // Confirm that an object with same id existing in database;
+            SerinusStrategy dbObject = strategyMapper.selectByPrimaryKey(strategy.getUuid());
+            if (dbObject != null) {
+                // Confirm that two object has same title and product
+                boolean identity = dbObject.getProduct().equals(strategy.getProduct());
+                identity = identity && dbObject.getTitle().equals(strategy.getTitle());
+                if (identity) {
+                    log.info("Update strategy, id = {}", strategy.getUuid());
+                    BeanUtils.copyProperties(strategy, dbObject);
+                    strategyMapper.updateByPrimaryKey(dbObject);
+                    return;
                 }
             }
-
-            strategy.setUuid(SerinusHelper.generateUUID());
-            log.info("Insert new strategy, id = {}", strategy.getUuid());
-            strategyMapper.insert(strategy);
         }
+
+        strategy.setUuid(SerinusHelper.generateUUID());
+        log.info("Insert new strategy, id = {}", strategy.getUuid());
+        strategyMapper.insert(strategy);
     }
 
     @Transactional
@@ -99,6 +89,7 @@ public class StrategyService {
         return result;
     }
 
+    @Transactional
     public Map<String, List<SerinusStrategy>> getSerinusStrategyList() {
         Map<String, List<SerinusStrategy>> result = new HashMap<>();
         List<SerinusStrategy> serinusStrategies = strategyMapper.selectAll();

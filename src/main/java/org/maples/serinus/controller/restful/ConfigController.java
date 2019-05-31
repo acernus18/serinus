@@ -24,7 +24,7 @@ import static org.maples.serinus.utility.RequestHelper.createQueryString;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/config")
+@RequestMapping("/conf-service")
 public class ConfigController {
 
     @Autowired
