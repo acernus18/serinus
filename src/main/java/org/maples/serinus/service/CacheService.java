@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
+import org.maples.serinus.config.ConstConfig;
 import org.maples.serinus.model.SerinusConfig;
 import org.maples.serinus.model.SerinusStrategy;
 import org.maples.serinus.repository.SerinusConfigMapper;
@@ -19,7 +20,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,7 +67,20 @@ public class CacheService {
     @Autowired
     private SerinusConfigMapper mapper;
 
+    @Autowired
+    private ZKClientService zkClientService;
+
+    @Autowired
+    private ConstConfig constConfig;
+
     private ConcurrentMap<String, List<SerinusStrategy>> cacheMap = new ConcurrentHashMap<>();
+
+    @PostConstruct
+    public void postConstruct() {
+        for (String path : constConfig.getZkSubscribePath()) {
+            zkClientService.subscribe(path, x -> log.info("Recv message [{}]", x));
+        }
+    }
 
     private List<SerinusStrategy> createResults(List<SerinusStrategy> values) {
         List<SerinusStrategy> results = new ArrayList<>(values.size());

@@ -1,5 +1,6 @@
 package org.maples.serinus.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static org.junit.Assert.*;
 
+@Slf4j
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class ZKClientServiceTest {
@@ -25,14 +27,14 @@ public class ZKClientServiceTest {
         Lock lock = new ReentrantLock();
         Condition condition = lock.newCondition();
         lock.lock();
-        zkClientService.subscribe("/hello/info");
+        zkClientService.subscribe("/hello/info", log::info);
         condition.await();
     }
 
     @Test
     public void subscribe2() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        zkClientService.subscribe("/hello/info");
+        zkClientService.subscribe("/hello/info", log::info);
         latch.await();
     }
 }
