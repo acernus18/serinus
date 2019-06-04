@@ -67,7 +67,7 @@ create table if not exists `tb_serinus_role_resources`
     `create_time`  datetime                 default current_timestamp comment '添加时间',
     `update_time`  datetime                 default current_timestamp comment '更新时间',
 
-    foreign key (`role_id`) references `tb_serinus_user` (`id`) on delete cascade on update cascade,
+    foreign key (`role_id`) references `tb_serinus_role` (`id`) on delete cascade on update cascade,
     foreign key (`resources_id`) references `tb_serinus_resources` (`id`) on delete cascade on update cascade
 
 ) engine = innodb
@@ -194,5 +194,19 @@ create table `tb_serinus_config`
 
     primary key (`id`),
     unique key `u_idx_c_key` (`c_key`)
+) engine = InnoDB
+  default charset = utf8mb4;
+
+create table `tb_serinus_product`
+(
+    `id`           int unsigned        not null auto_increment,
+    `belong_to`    varchar(255)        not null default 'all',
+    `product_name` varchar(255)        not null,
+    `status`       tinyint(2) unsigned not null default '0',
+    `create_time`  datetime                     default current_timestamp comment '注册时间',
+    `update_time`  datetime                     default current_timestamp comment '更新时间',
+
+    primary key (`id`),
+    unique key `u_idx_name` (`product_name`)
 ) engine = InnoDB
   default charset = utf8mb4;

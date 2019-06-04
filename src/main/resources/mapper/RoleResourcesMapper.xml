@@ -9,4 +9,16 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
+
+    <select id="selectByRoleID" resultMap="BaseResultMap">
+        select id, role_id, resources_id, `status`, create_time, update_time
+        from tb_serinus_role_resources
+        where role_id = ${roleID}
+    </select>
+
+    <select id="selectByRoleIDAndResourceID" resultMap="BaseResultMap">
+        select id, role_id, resources_id, `status`, create_time, update_time
+        from tb_serinus_role_resources
+        where role_id = ${roleID} and resources_id = ${resourcesID}
+    </select>
 </mapper>

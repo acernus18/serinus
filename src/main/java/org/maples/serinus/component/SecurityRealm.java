@@ -1,5 +1,6 @@
 package org.maples.serinus.component;
 
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -12,9 +13,13 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
+import org.maples.serinus.model.RoleResources;
+import org.maples.serinus.model.SerinusResources;
 import org.maples.serinus.model.SerinusRole;
 import org.maples.serinus.model.SerinusUser;
 import org.maples.serinus.model.UserRole;
+import org.maples.serinus.repository.RoleResourcesMapper;
+import org.maples.serinus.repository.SerinusResourcesMapper;
 import org.maples.serinus.repository.SerinusRoleMapper;
 import org.maples.serinus.repository.SerinusUserMapper;
 import org.maples.serinus.repository.UserRoleMapper;
@@ -39,7 +44,13 @@ public class SecurityRealm extends AuthorizingRealm {
     private SerinusRoleMapper roleMapper;
 
     @Autowired
+    private SerinusResourcesMapper resourcesMapper;
+
+    @Autowired
     private UserRoleMapper userRoleMapper;
+
+    @Autowired
+    private RoleResourcesMapper roleResourcesMapper;
 
     @Autowired
     public SecurityRealm(CredentialsMatcher credentialsMatcher) {
@@ -70,17 +81,29 @@ public class SecurityRealm extends AuthorizingRealm {
         SerinusUser serinusUser = userMapper.selectOneByPrincipal(principal);
 
         log.info("Looking for AuthorizationInfo for [{}]", principal);
+        SimpleAuthorizationInfo result = new SimpleAuthorizationInfo();
 
+        // Return: [id, roleId] ...
         List<UserRole> userRoles = userRoleMapper.selectByUserId(serinusUser.getId());
 
-        Set<String> roles = new HashSet<>();
+        // Find Roles
         for (UserRole userRole : userRoles) {
-            SerinusRole role = roleMapper.selectByPrimaryKey(userRole.getRoleId());
+            Integer roleId = userRole.getRoleId();
 
-            roles.add(role.getName());
+            // Return [Id, role INFO...]
+            SerinusRole role = roleMapper.selectByPrimaryKey(roleId);
+            result.addRole(role.getName());
+
+            // Return: [id, roleID, resourceID]...
+            List<RoleResources> roleResources = roleResourcesMapper.selectByRoleID(roleId);
+
+            for (RoleResources roleResource : roleResources) {
+                SerinusResources resource = resourcesMapper.selectByPrimaryKey(roleResource.getResourcesId());
+                result.addStringPermission(resource.getPermission());
+            }
         }
 
-        log.info("Found = {}", roles);
-        return new SimpleAuthorizationInfo(roles);
+        log.info("Found = {}", JSON.toJSONString(result, true));
+        return result;
     }
 }

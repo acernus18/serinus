@@ -2,6 +2,7 @@ package org.maples.serinus.controller.page;
 
 import lombok.extern.slf4j.Slf4j;
 import org.maples.serinus.service.PermissionService;
+import org.maples.serinus.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,14 +19,15 @@ public class SystemController {
     @Autowired
     private PermissionService permissionService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/dashboard")
     public String dashboardFTL(Model model) {
-        model.addAttribute("allUsers", permissionService.getSerinusUsers());
+        model.addAttribute("allUsers", userService.getSerinusUsers());
         model.addAttribute("rolesMapping", permissionService.getRoleUserMapping());
         return "system/dashboard";
     }
-
-
 
     @GetMapping("/role/delete/{roleName}")
     public String deleteSerinusRole(@PathVariable("roleName") String roleName) {

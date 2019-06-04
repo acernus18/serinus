@@ -1,9 +1,13 @@
 package org.maples.serinus.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.maples.serinus.model.RoleResources;
+import org.maples.serinus.model.SerinusResources;
 import org.maples.serinus.model.SerinusRole;
 import org.maples.serinus.model.SerinusUser;
 import org.maples.serinus.model.UserRole;
+import org.maples.serinus.repository.RoleResourcesMapper;
+import org.maples.serinus.repository.SerinusResourcesMapper;
 import org.maples.serinus.repository.SerinusRoleMapper;
 import org.maples.serinus.repository.SerinusUserMapper;
 import org.maples.serinus.repository.UserRoleMapper;
@@ -11,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.TableGenerator;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,22 +33,59 @@ public class PermissionService {
     private SerinusRoleMapper roleMapper;
 
     @Autowired
+    private SerinusResourcesMapper resourcesMapper;
+
+    @Autowired
     private UserRoleMapper userRoleMapper;
 
-
-    @Transactional
-    public void addSerinusUser(SerinusUser serinusUser) {
-        serinusUser.setStatus(0);
-        userMapper.insert(serinusUser);
-    }
+    @Autowired
+    private RoleResourcesMapper roleResourcesMapper;
 
     @Transactional
     public void addSerinusRole(String roleName) {
         SerinusRole role = new SerinusRole();
         role.setName(roleName);
         role.setStatus(0);
-
+        role.setDescription("");
+        role.setAvailable(true);
+        role.setCreateTime(new Date());
+        role.setUpdateTime(new Date());
         roleMapper.insert(role);
+    }
+
+    @Transactional
+    public void addSerinusResources(String url, String permission) {
+        SerinusResources resources = new SerinusResources();
+        resources.setName(url);
+        resources.setUrl(url);
+        resources.setPermission(permission);
+        resources.setAvailable(true);
+        resources.setCreateTime(new Date());
+        resources.setUpdateTime(new Date());
+        resourcesMapper.insert(resources);
+    }
+
+    @Transactional
+    public void addRoleResources(String roleName, String url) {
+        SerinusRole serinusRole = roleMapper.selectByRoleName(roleName);
+        SerinusResources resources = resourcesMapper.selectByUrl(url);
+
+        if (serinusRole != null && resources != null) {
+            Integer serinusRoleId = serinusRole.getId();
+            Integer resourcesId = resources.getId();
+            RoleResources roleResources = roleResourcesMapper.selectByRoleIDAndResourceID(serinusRoleId, resourcesId);
+
+            if (roleResources == null) {
+                roleResources = new RoleResources();
+                roleResources.setRoleId(serinusRoleId);
+                roleResources.setResourcesId(resourcesId);
+                roleResources.setStatus(0);
+                roleResources.setCreateTime(new Date());
+                roleResources.setUpdateTime(new Date());
+
+                roleResourcesMapper.insert(roleResources);
+            }
+        }
     }
 
     @Transactional
@@ -58,6 +101,8 @@ public class PermissionService {
                 userRole.setUserId(user.getId());
                 userRole.setRoleId(role.getId());
                 userRole.setStatus(0);
+                userRole.setCreateTime(new Date());
+                userRole.setUpdateTime(new Date());
                 userRoleMapper.insert(userRole);
             }
         }
@@ -69,6 +114,31 @@ public class PermissionService {
 
         if (role != null) {
             roleMapper.deleteByPrimaryKey(role.getId());
+        }
+    }
+
+    @Transactional
+    public void deleteSerinusResources(String url) {
+        SerinusResources resources = resourcesMapper.selectByUrl(url);
+
+        if (resources != null) {
+            resourcesMapper.deleteByPrimaryKey(resources.getId());
+        }
+    }
+
+    @Transactional
+    public void deleteRoleResources(String roleName, String url) {
+        SerinusRole serinusRole = roleMapper.selectByRoleName(roleName);
+        SerinusResources resources = resourcesMapper.selectByUrl(url);
+
+        if (serinusRole != null && resources != null) {
+            Integer serinusRoleId = serinusRole.getId();
+            Integer resourcesId = resources.getId();
+            RoleResources roleResources = roleResourcesMapper.selectByRoleIDAndResourceID(serinusRoleId, resourcesId);
+
+            if (roleResources != null) {
+                roleResourcesMapper.deleteByPrimaryKey(roleResources.getId());
+            }
         }
     }
 
@@ -89,10 +159,6 @@ public class PermissionService {
 
     public List<SerinusRole> getSerinusRoles() {
         return roleMapper.selectAll();
-    }
-
-    public List<SerinusUser> getSerinusUsers() {
-        return userMapper.selectAll();
     }
 
     public Map<String, List<SerinusUser>> getRoleUserMapping() {

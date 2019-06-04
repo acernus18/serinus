@@ -4,9 +4,18 @@
 
     <script src="/webjars/jquery/3.0.0/jquery.min.js"></script>
     <script src="/static/scripts/common.js"></script>
+    <script>
+        function addUser() {
+            postRequestBody("/permission/user/add", formData("user-form"), data => {
+                console.log(data);
+                location.assign("/index");
+            })
+        }
+    </script>
 </head>
 
-<form id="user-form" method="post" action="/test/post">
+<body>
+<form id="user-form" method="post">
     <div>
         <label for="principal">用户名: <span class="required">*</span></label>
         <div>
@@ -38,10 +47,5 @@
         </div>
     </div>
 </form>
-<button onclick="t()">sb</button>
-
-<script>
-    function t() {
-        postRequestBody("/test/post", formData());
-    }
-</script>
+<button onclick="addUser()">sb</button>
+</body>

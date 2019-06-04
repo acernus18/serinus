@@ -14,4 +14,7 @@ public class ConstConfig {
 
     @Value("${zk.subscribe.path}")
     private String[] zkSubscribePath;
+
+    @Value("${slave.datasource}")
+    private String[] slaveDatasource;
 }

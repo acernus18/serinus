@@ -60,8 +60,11 @@
         <!--<table tableName="tb_strategy_history" domainObjectName="StrategyHistory">-->
         <!--    <generatedKey column="uuid" sqlStatement="JDBC"/>-->
         <!--</table>-->
+        <!--<table tableName="tb_serinus_config" domainObjectName="SerinusConfig">-->
+        <!--    <generatedKey column="id" sqlStatement="JDBC"/>-->
+        <!--</table>-->
 
-        <table tableName="tb_serinus_config" domainObjectName="SerinusConfig">
+        <table tableName="tb_serinus_product" domainObjectName="SerinusProduct">
             <generatedKey column="id" sqlStatement="JDBC"/>
         </table>
     </context>
