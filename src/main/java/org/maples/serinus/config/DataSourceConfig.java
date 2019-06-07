@@ -18,33 +18,6 @@ import java.lang.annotation.Target;
 @Aspect
 @Configuration
 public class DataSourceConfig {
-
-    // @Bean
-    // @Primary
-    // public DataSource primaryDatasource() {
-    //     return DataSourceBuilder.create().build();
-    // }
-    //
-    // @Bean(name = "roundRobinDataSourceProxy")
-    // public AbstractRoutingDataSource roundRobinDataSourceProxy() {
-    //
-    //     Map<Object, Object> targetDataSources = new HashMap<>();
-    //     //把所有数据库都放在targetDataSources中,注意key值要和determineCurrentLookupKey()中代码写的一至，否则切换数据源时找不到正确的数据源
-    //     targetDataSources.put(DataSourceType.write.getType(), writeDataSource);
-    //     targetDataSources.put(DataSourceType.read.getType() + "1", readDataSource01);
-    //     targetDataSources.put(DataSourceType.read.getType() + "2", readDataSource02);
-    //
-    //     final int readSize = Integer.parseInt(readDataSourceSize);
-    //     //     MyAbstractRoutingDataSource proxy = new MyAbstractRoutingDataSource(readSize);
-    //
-    //     //路由类，寻找对应的数据源
-    //
-    //
-    //     proxy.setDefaultTargetDataSource(writeDataSource);//默认库
-    //     proxy.setTargetDataSources(targetDataSources);
-    //     return proxy;
-    // }
-
     @Target({ElementType.METHOD, ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     @Inherited

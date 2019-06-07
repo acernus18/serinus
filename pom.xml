@@ -56,11 +56,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!--<dependency>-->
-        <!--    <groupId>org.apache.shiro</groupId>-->
-        <!--    <artifactId>shiro-spring-boot-web-starter</artifactId>-->
-        <!--    <version>1.4.0</version>-->
-        <!--</dependency>-->
+
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
@@ -169,6 +165,11 @@
             <groupId>org.webjars</groupId>
             <artifactId>popper.js</artifactId>
             <version>1.14.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery-ui</artifactId>
+            <version>1.12.1</version>
         </dependency>
 
     </dependencies>

@@ -2,6 +2,7 @@ package org.maples.serinus.controller.restful;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringUtils;
 import org.maples.serinus.model.SerinusConfig;
 import org.maples.serinus.service.CacheService;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.maples.serinus.utility.RequestHelper.createQueryString;
 
@@ -33,14 +36,23 @@ public class ConfigController {
     @Autowired
     private CacheService cacheService;
 
+    private Object createResult(Object value) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("errno", 0);
+        result.put("errmsg", "Success");
+        result.put("data", value);
+
+        return result;
+    }
+
     @PostMapping("/save")
     public Object update(@RequestBody SerinusConfig configs) {
-        return configService.save(configs);
+        return createResult(configService.save(configs));
     }
 
     @GetMapping("/get")
     public Object get(long id) {
-        return configService.findById(id);
+        return createResult(configService.findById(id));
     }
 
     @GetMapping("/list")
@@ -71,17 +83,20 @@ public class ConfigController {
         }
 
         boolean order = "asc".equalsIgnoreCase(sortOrder);
-        return configService.search(product, word, statusValue, pageValue, pageSizeValue, sortKey, order);
+        PageInfo<SerinusConfig> result = configService.search(product, word, statusValue,
+                pageValue, pageSizeValue, sortKey, order);
+
+        return createResult(result);
     }
 
     @GetMapping("/dump")
     public Object dump(long id) throws IOException {
-        return configService.exportConfigToFile(id);
+        return createResult(configService.exportConfigToFile(id));
     }
 
     @PostMapping("/rollback")
     public Object rollback(long id) {
-        return configService.rollback(id);
+        return createResult(configService.rollback(id));
     }
 
     @GetMapping("/query")
@@ -89,7 +104,7 @@ public class ConfigController {
         if (StringUtils.isBlank(key)) {
             throw new RuntimeException("Key Invalid");
         }
-        return configService.getJsonValueByKey(key, nocache == 0);
+        return createResult(configService.getJsonValueByKey(key, nocache == 0));
     }
 
     @RequestMapping(value = "/query/{key}", method = {RequestMethod.GET, RequestMethod.POST})
@@ -101,7 +116,7 @@ public class ConfigController {
     @RequestMapping(value = "/query/standard/{key}", method = {RequestMethod.GET, RequestMethod.POST})
     public Object queryPolicyWithStandardReturn(@PathVariable String key, HttpServletRequest request) {
         String result = configService.getPolicyByKeyAndParams(key, createQueryString(request));
-        return JSON.parseObject(result);
+        return createResult(JSON.parseObject(result));
     }
 
     @GetMapping("/fetchSlaveStatus")
@@ -112,12 +127,12 @@ public class ConfigController {
     @GetMapping("/flush/all")
     public Object flushAll() {
         cacheService.flushConcentrationCacheAsync();
-        return true;
+        return createResult(true);
     }
 
     @GetMapping("/flush")
     public Object flushKey(@RequestParam String cKey) {
-        return cacheService.flushConcentrationCache(cKey);
+        return createResult(cacheService.flushConcentrationCache(cKey));
     }
 }
 
