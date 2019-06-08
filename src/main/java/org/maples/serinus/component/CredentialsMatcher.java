@@ -11,7 +11,7 @@ import org.apache.shiro.authc.credential.SimpleCredentialsMatcher;
 import org.maples.serinus.model.SerinusUser;
 import org.maples.serinus.repository.SerinusUserMapper;
 import org.maples.serinus.service.UserService;
-import org.maples.serinus.utility.PasswordUtil;
+import org.maples.serinus.utility.PasswordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -72,7 +72,7 @@ public class CredentialsMatcher extends SimpleCredentialsMatcher {
         String dbPassword = (String) info.getCredentials();
 
         try {
-            dbPassword = PasswordUtil.decrypt(dbPassword, uToken.getUsername());
+            dbPassword = PasswordUtils.decrypt(dbPassword, uToken.getUsername());
         } catch (Exception e) {
             log.warn(e.getLocalizedMessage());
             return false;

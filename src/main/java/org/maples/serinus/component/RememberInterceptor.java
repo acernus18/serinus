@@ -6,7 +6,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.maples.serinus.model.SerinusUser;
 import org.maples.serinus.repository.SerinusUserMapper;
-import org.maples.serinus.utility.PasswordUtil;
+import org.maples.serinus.utility.PasswordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -38,7 +38,7 @@ public class RememberInterceptor implements HandlerInterceptor {
                 UsernamePasswordToken token = new UsernamePasswordToken();
 
                 token.setUsername(principal);
-                token.setPassword(PasswordUtil.decrypt(user.getCredential(), principal).toCharArray());
+                token.setPassword(PasswordUtils.decrypt(user.getCredential(), principal).toCharArray());
                 token.setRememberMe(true);
 
                 subject.login(token);

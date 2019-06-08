@@ -6,7 +6,7 @@ import org.maples.serinus.model.SerinusUser;
 import org.maples.serinus.model.UserRole;
 import org.maples.serinus.repository.SerinusUserMapper;
 import org.maples.serinus.repository.UserRoleMapper;
-import org.maples.serinus.utility.PasswordUtil;
+import org.maples.serinus.utility.PasswordUtils;
 import org.maples.serinus.utility.RequestHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,7 +63,7 @@ public class UserService {
     public void addSerinusUser(SerinusUser user) throws Exception {
         user.setStatus(0);
         user.setRegIp(RequestHelper.getRealIp());
-        user.setCredential(PasswordUtil.encrypt(user.getCredential(), user.getPrincipal()));
+        user.setCredential(PasswordUtils.encrypt(user.getCredential(), user.getPrincipal()));
         user.setCreateTime(new Date());
         user.setUpdateTime(new Date());
         userMapper.insert(user);
