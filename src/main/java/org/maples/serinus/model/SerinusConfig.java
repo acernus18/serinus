@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import org.apache.commons.lang.StringUtils;
-import org.maples.serinus.utility.ParseUtility;
+import org.maples.serinus.utility.ParseUtils;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.DigestUtils;
 
@@ -64,9 +64,9 @@ public class SerinusConfig {
         }
 
         if (type == TYPE.INI.getValue()) {
-            return ParseUtility.parseINIString(value);
+            return ParseUtils.parseINIString(value);
         } else {
-            return ParseUtility.parseJSONString(value);
+            return ParseUtils.parseJSONString(value);
         }
     }
 

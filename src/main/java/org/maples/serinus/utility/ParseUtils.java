@@ -11,10 +11,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class ParseUtility {
+public class ParseUtils {
 
     private static final String DEFAULT_SECTION = "INI::Utility::default";
-    private static boolean SUPPORT_SECTION = false;
+    private static final boolean SUPPORT_SECTION = false;
+
+    private static String getTrim(String line) {
+        return line.substring(0, line.indexOf('[')).trim();
+    }
 
     private static Map<String, List<String>> parseSection(String[] value) {
         String sectionName = DEFAULT_SECTION;
@@ -87,15 +91,15 @@ public class ParseUtility {
                     v = v.substring(1, v.length() - 1);
                 }
 
-                if (Pattern.matches("^.+\\[\\]\\s*=.*$", line)) {
+                if (Pattern.matches("^.+\\[]\\s*=.*$", line)) {
                     // a[]=1
-                    String arrayName = extractString(line.substring(0, line.indexOf('[')).trim());
+                    String arrayName = extractString(getTrim(line));
 
                     indexType.putIfAbsent(arrayName, new JSONArray());
                     indexType.get(arrayName).add(v);
-                } else if (Pattern.matches("^.+\\[.+\\]\\s*=.*$", line)) {
+                } else if (Pattern.matches("^.+\\[.+]\\s*=.*$", line)) {
                     // a[string]=1
-                    String arrayName = extractString(line.substring(0, line.indexOf('[')).trim());
+                    String arrayName = extractString(getTrim(line));
                     String key = extractString(line.substring(line.indexOf('[') + 1, line.indexOf(']')));
 
                     objectType.putIfAbsent(arrayName, new JSONObject());
