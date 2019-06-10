@@ -6,7 +6,7 @@
     <script src="/static/scripts/common.js"></script>
     <script>
         function addUser() {
-            postRequestBody("/permission/user/add", formData("user-form"), data => {
+            postRequestBody("/permission/user/add", formDataString("user-form"), data => {
                 console.log(data);
                 location.assign("/index");
             })

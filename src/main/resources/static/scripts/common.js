@@ -1,4 +1,4 @@
-function formData(formID) {
+function formDataString(formID) {
     let pair = $("#" + formID).serializeArray();
     let result = {};
 
@@ -7,6 +7,17 @@ function formData(formID) {
     });
 
     return JSON.stringify(result);
+}
+
+function formDataObject(formID) {
+    let pair = $("#" + formID).serializeArray();
+    let result = {};
+
+    $.map(pair, function (item) {
+        result[item['name']] = item['value'];
+    });
+
+    return result;
 }
 
 function postRequestBody(url, body, callback) {

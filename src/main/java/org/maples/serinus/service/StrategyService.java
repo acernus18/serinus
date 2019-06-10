@@ -45,6 +45,10 @@ public class StrategyService {
         JSONObject filter = JSON.parseObject(strategy.getFilter());
         JSONObject content = JSON.parseObject(strategy.getContent());
 
+        log.info("Save strategy\n{}", JSON.toJSONString(strategy, true));
+        log.info("Filter = \n{}", JSON.toJSONString(filter, true));
+        log.info("Content = \n{}", JSON.toJSONString(content, true));
+
         strategy.setFilter(SerinusHelper.base64Encode(filter.toJSONString()));
         strategy.setContent(SerinusHelper.base64Encode(content.toJSONString()));
 
@@ -58,6 +62,7 @@ public class StrategyService {
                 if (identity) {
                     log.info("Update strategy, id = {}", strategy.getUuid());
                     BeanUtils.copyProperties(strategy, dbObject);
+                    strategy.setEnabled(false);
                     strategyMapper.updateByPrimaryKey(dbObject);
                     return;
                 }
@@ -65,6 +70,10 @@ public class StrategyService {
         }
 
         strategy.setUuid(SerinusHelper.generateUUID());
+        int order = strategyMapper.selectCountByProduct(strategy.getProduct());
+        strategy.setOrderInProduct(order);
+        strategy.setEnabled(false);
+
         log.info("Insert new strategy, id = {}", strategy.getUuid());
         strategyMapper.insert(strategy);
     }
@@ -96,7 +105,7 @@ public class StrategyService {
 
         for (SerinusStrategy strategy : serinusStrategies) {
             result.putIfAbsent(strategy.getProduct(), new ArrayList<>());
-            List<SerinusStrategy> strategies = result.get(strategy.getTitle());
+            List<SerinusStrategy> strategies = result.get(strategy.getProduct());
 
             strategy.setFilter(SerinusHelper.base64Decode(strategy.getFilter()));
             strategy.setContent(SerinusHelper.base64Decode(strategy.getContent()));

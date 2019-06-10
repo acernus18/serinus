@@ -15,12 +15,27 @@ public class RouteController {
     }
 
     @GetMapping("/register")
-    public String userAdd() {
+    public String register() {
         return "register";
     }
 
     @GetMapping("/login")
     public String login(Model model) {
         return "login";
+    }
+
+    @GetMapping("/strategy/index")
+    public String strategyIndex() {
+        return "strategy/index";
+    }
+
+    @GetMapping("/conf-service/0b5b00d51b08d3918fb22033b797a87a.png")
+    public String configImage() {
+        return "forward:/static/image/0b5b00d51b08d3918fb22033b797a87a.png";
+    }
+
+    @GetMapping("/conf-service/index")
+    public String configIndex() {
+        return "config/index";
     }
 }

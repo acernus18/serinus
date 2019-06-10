@@ -27,31 +27,31 @@
 
 
     function updateCondition(key, op, value) {
-        formData.condition[key] = {op, value};
+        formDataString.condition[key] = {op, value};
     }
 
     function updateConditionKey(oldKey, newKey) {
-        let value = formData.condition[oldKey];
-        delete formData.condition[oldKey];
-        formData.condition[newKey] = value;
+        let value = formDataString.condition[oldKey];
+        delete formDataString.condition[oldKey];
+        formDataString.condition[newKey] = value;
     }
 
     function deleteCondtion(key) {
-        delete formData.condition[key];
+        delete formDataString.condition[key];
     }
 
     function updateContentValue(key, value) {
-        formData.content[key] = value;
+        formDataString.content[key] = value;
     }
 
     function updateContentKey(oldKey, newKey) {
-        let value = formData.content[oldKey];
-        delete formData.content[oldKey];
-        formData.content[newKey] = value;
+        let value = formDataString.content[oldKey];
+        delete formDataString.content[oldKey];
+        formDataString.content[newKey] = value;
     }
 
     function deleteContent(key) {
-        delete formData.content[key];
+        delete formDataString.content[key];
     }
 
     function reRender() {

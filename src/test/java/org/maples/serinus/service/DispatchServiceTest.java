@@ -38,7 +38,7 @@ public class DispatchServiceTest {
         Map<String, String> params = new HashMap<>();
         params.put("deviceID", "123maples");
 
-        Map<String, Integer> resultMap = dispatchService.dispatch(Collections.singletonList(strategy), params);
-        log.info(JSON.toJSONString(resultMap, true));
+        // Map<String, Integer> resultMap = dispatchService.dispatch(Collections.singletonList(strategy), params);
+        // log.info(JSON.toJSONString(resultMap, true));
     }
 }

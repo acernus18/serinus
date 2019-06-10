@@ -1,6 +1,8 @@
 package org.maples.serinus.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -68,12 +70,12 @@ public class DispatchService {
         return args.getBytes();
     }
 
-    public Map<String, Integer> dispatch(List<SerinusStrategy> strategies, Map<String, String> params) {
-        Map<String, Integer> resultsMap = new HashMap<>();
+    public List<JSON> dispatch(List<SerinusStrategy> strategies, Map<String, String> params) {
+        List<JSON> resultList = new ArrayList<>();
 
         String deviceID = params.get("deviceID");
         if (StringUtils.isBlank(deviceID)) {
-            return resultsMap;
+            return resultList;
         }
 
         List<SerinusStrategy> filteredStrategies = new ArrayList<>();
@@ -98,9 +100,21 @@ public class DispatchService {
         for (int i = 0; i < filteredStrategies.size(); i++) {
             Object result = results.get(i);
             if (result instanceof String) {
-                resultsMap.put(filteredStrategies.get(i).getUuid(), Integer.valueOf((String) result));
+                int dispatchResult = Integer.parseInt((String) result);
+
+                if (dispatchResult > 0) {
+                    SerinusStrategy strategy = filteredStrategies.get(i);
+
+                    if (strategy.getType() != 2) {
+                        resultList.add(JSON.parseObject(strategy.getContent()));
+                    } else {
+                        JSONArray abArray = JSON.parseArray(strategy.getContent());
+                        JSONObject abContent = abArray.getJSONObject(dispatchResult);
+                        resultList.add(abContent);
+                    }
+                }
             }
         }
-        return resultsMap;
+        return resultList;
     }
 }
