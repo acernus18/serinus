@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.NodeCache;
+import org.apache.curator.framework.recipes.locks.InterProcessLock;
+import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.maples.serinus.model.ZKMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,5 +71,9 @@ public class ZKClientService {
         Map<String, String> result = new HashMap<>();
         nodeCaches.forEach((k, v) -> result.put(k, new String(v.getCurrentData().getData())));
         return result;
+    }
+
+    public void distributeLock() {
+        InterProcessLock lock = new InterProcessMutex(curatorFramework, "/123");
     }
 }
