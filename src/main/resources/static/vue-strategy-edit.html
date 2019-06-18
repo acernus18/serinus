@@ -1,0 +1,188 @@
+<html lang="en">
+<head>
+    <title></title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.8/vue.min.js"></script>
+
+    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>-->
+    <!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>-->
+
+    <!--<link rel="stylesheet" href="https://cdn.staticfile.org/codemirror/5.46.0/codemirror.css">-->
+    <!--<script src="https://cdn.staticfile.org/codemirror/5.46.0/codemirror.js"></script>-->
+    <!--<script src="https://cdn.staticfile.org/codemirror/5.46.0/addon/selection/active-line.js"></script>-->
+    <!--<script src="https://cdn.staticfile.org/codemirror/5.46.0/addon/edit/matchbrackets.js"></script>-->
+    <!--<script src="https://cdn.staticfile.org/codemirror/5.46.0/mode/javascript/javascript.js"></script>-->
+    <script src="./scripts/common.js"></script>
+</head>
+<body>
+<form id="form">
+    <div id="app">
+        <!--1-->
+        <label>
+            Product
+            <input v-model="product" type="text" name="product">
+        </label>
+        <br/>
+        <!--2 private Integer type;-->
+        <label>
+            Type
+            <select v-model="type">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+        </label>
+        <br/>
+
+        <!--3 private Integer presetType;-->
+        <label>
+            Preset Type
+            <select v-model="presetType">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+        </label>
+        <br/>
+
+        <!--4 private String title;-->
+        <label>
+            Title
+            <input type="text" v-model="title">
+        </label>
+        <br/>
+
+        <!--5-->
+        <label>
+            Max Count
+            <input type="number" v-model="maxCount">
+        </label>
+        <br/>
+
+        <!--6 private Date startAt;-->
+        <label>
+            Start At
+            <input type="datetime-local" v-model="startAt">
+        </label>
+        <br/>
+
+        <!--7 private Date endAt;-->
+        <label>
+            End At
+            <input type="datetime-local" v-model="endAt">
+        </label>
+        <br/>
+
+        <!--8 private String filter;-->
+        <label v-for="(filter, index) in filters">Filter : {{index}}
+            <input v-model="filter.key" type="text" name="key">
+            <select v-model="filter.operator">
+                <option value="volvo">Volvo</option>
+                <option value="saab">Saab</option>
+                <option value="opel">Opel</option>
+                <option value="audi">Audi</option>
+            </select>
+            <input v-model="filter.value" type="text" name="value">
+            <input type="button" @click="remove(index)" value="delete">
+            {{filter}}
+            <br/>
+        </label>
+        <input type="button" @click="append" value="add">
+        <br/>
+
+        <!--9 private String content;-->
+        <label>
+            Content
+            <textarea id="content" v-model="content"></textarea>
+        </label>
+        <br/>
+
+        <!--10-->
+        <label>
+            Always Return
+            <input type="checkbox" v-model="alwaysReturn">
+        </label>
+        <br/>
+        <input type="button" @click="show" value="submit">
+    </div>
+
+</form>
+</body>
+<script>
+    let application = new Vue({
+        el: '#app',
+
+        data: {
+            product: "",
+            type: "0",
+            presetType: "0",
+            title: "",
+            maxCount: "",
+            startAt: "",
+            endAt: "",
+            filters: [],
+            content: "",
+            alwaysReturn: false
+        },
+
+        methods: {
+            append: function () {
+                this.filters.push({
+                    key: "",
+                    operator: "",
+                    value: ""
+                });
+            },
+
+            remove: function (index) {
+                this.filters.splice(index, 1);
+            },
+
+            show: function () {
+                let result = {
+                    product: this.product,
+                    type: this.type,
+                    presetType: this.presetType,
+                    title: this.title,
+                    maxCount: this.maxCount,
+                    startAt: this.startAt,
+                    endAt: this.endAt,
+                    content: this.content,
+                    alwaysReturn: this.alwaysReturn,
+                    enable: false
+                };
+
+
+                let filter = {};
+
+                this.filters.forEach(v => {
+                    if (!filter.hasOwnProperty(v.key)) {
+                        filter[v.key] = {};
+                    }
+
+                    let valueArray = v.value.split(",");
+
+                    if (valueArray.length === 1) {
+                        filter[v.key][v.operator] = valueArray[0];
+                    } else {
+                        filter[v.key][v.operator] = valueArray;
+                    }
+                });
+
+                result.filter = filter;
+                console.log(result);
+            }
+        }
+    });
+
+    // const editor = CodeMirror.fromTextArea(document.getElementById("content"), {
+    //     lineNumbers: true,
+    //     styleActiveLine: true,
+    //     matchBrackets: true,
+    //     indentUnit: 4,
+    // });
+
+</script>
+</html>
+

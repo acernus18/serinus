@@ -26,14 +26,12 @@ function postRequestBody(url, body, callback) {
         callback = () => {};
     }
 
-    $.ajax({
-        url: url,
-        type: "POST",
-        contentType: "application/json",
-        data: body,
-        dataType: "json",
-        success: callback,
-    });
+    let request = new XMLHttpRequest();
+
+    request.open("POST", url);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.send(JSON.stringify(body));
+    request.onloadend = callback;
 }
 
 function login(parameter) {
@@ -66,4 +64,67 @@ function logout() {
             location.assign("/index");
         },
     });
+}
+
+function serialize(form) {
+    if (!form || form.nodeName !== "FORM") {
+        return {};
+    }
+
+    let result = {};
+    for (let i = 0; i < form.elements.length; i++) {
+        // console.log(form.elements[i]);
+        if (form.elements[i].name === "") {
+            continue;
+        }
+        switch (form.elements[i].nodeName) {
+            case 'INPUT':
+                switch (form.elements[i].type) {
+                    case 'text':
+                    case 'tel':
+                    case 'email':
+                    case 'hidden':
+                    case 'password':
+                    case 'button':
+                    case 'reset':
+                    case 'submit':
+                        // result.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                        result[form.elements[i].name] = form.elements[i].value;
+                        break;
+                    case 'checkbox':
+                    case 'radio':
+                        if (form.elements[i].checked) {
+                            // result.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                            result[form.elements[i].name] = form.elements[i].value;
+                        }
+                        break;
+                }
+                break;
+            case 'file':
+                break;
+            case 'TEXTAREA':
+                // result.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                result[form.elements[i].name] = form.elements[i].value;
+                break;
+            case 'SELECT':
+                switch (form.elements[i].type) {
+                    case 'select-one':
+                        // result.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                        result[form.elements[i].name] = form.elements[i].value;
+                        break;
+                    case 'select-multiple':
+                        for (let j = 0; j < form.elements[i].options.length; j++) {
+                            if (form.elements[i].options[j].selected) {
+                                // result.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].options[j].value));
+                                result[form.elements[i].name] = form.elements[i].options[j].value;
+                            }
+                        }
+                        break;
+                }
+                break;
+            case 'BUTTON':
+                break;
+        }
+    }
+    return result;
 }
