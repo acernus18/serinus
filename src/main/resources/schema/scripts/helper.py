@@ -35,11 +35,8 @@ def downloadByChunk(url, tempFilePath):
     matchResult = re.match(r'^.*/([^/]+)$', url)
 
     headers = {
-        "Cookie": "JSESSIONID=50B1270C8C4A3EAA804893163F928E4A",
-        "Referer": "http://162.105.134.188/pdfindex.jsp?fid=15c19e02ab13ac80cfa2bc28ccb88589&xyz=0.91559873586277",
+        "Cookie": "JSESSIONID=FE8819BC219D5D7A34684FB352D01F55",
         "Connection": "keep-alive",
-        "Host": "162.105.134.188",
-        "Accept": "image/webp,image/apng,image/*,*/*;q=0.8"
     }
 
     if matchResult:
@@ -66,8 +63,8 @@ def main():
     if sys.argv[1] == 'clear':
         clearTempFile(tempFilePath)
     else:
-        for i in range(60, 73):
-            url = 'http://162.105.134.188/store/CCRIfA94j6CypAannIc4jg11/P01_' + generateName(i + 1) + ".jpg"
+        for i in range(66):
+            url = 'http://162.105.134.188/store/GAgpVUGCnuyqvENn0K1b6A11/P01_' + generateName(i + 1) + ".jpg"
             downloadByChunk(url, tempFilePath)
 
 
