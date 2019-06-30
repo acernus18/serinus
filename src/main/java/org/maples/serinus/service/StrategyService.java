@@ -114,4 +114,8 @@ public class StrategyService {
 
         return result;
     }
+
+    public List<SerinusStrategy> getSerinusStrategiesByProduct(String product) {
+        return strategyMapper.selectAllEnabledByProduct(product);
+    }
 }

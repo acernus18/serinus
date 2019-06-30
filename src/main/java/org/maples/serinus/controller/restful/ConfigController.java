@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringUtils;
 import org.maples.serinus.model.SerinusConfig;
-import org.maples.serinus.service.CacheService;
+import org.maples.serinus.service.ConfigCacheService;
 import org.maples.serinus.service.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -34,7 +34,7 @@ public class ConfigController {
     private ConfigService configService;
 
     @Autowired
-    private CacheService cacheService;
+    private ConfigCacheService configCacheService;
 
     private Object createResult(Object value) {
         Map<String, Object> result = new HashMap<>();
@@ -121,18 +121,18 @@ public class ConfigController {
 
     @GetMapping("/fetchSlaveStatus")
     public Object fetchSlaveStatus() {
-        return cacheService.fetchSlaveStatus();
+        return configCacheService.fetchSlaveStatus();
     }
 
     @GetMapping("/flush/all")
     public Object flushAll() {
-        cacheService.flushConcentrationCacheAsync();
+        configCacheService.flushConcentrationCacheAsync();
         return createResult(true);
     }
 
     @GetMapping("/flush")
     public Object flushKey(@RequestParam String cKey) {
-        return createResult(cacheService.flushConcentrationCache(cKey));
+        return createResult(configCacheService.flushConcentrationCache(cKey));
     }
 }
 

@@ -5,10 +5,10 @@ import org.apache.ibatis.annotations.Select;
 import org.maples.serinus.model.SerinusStrategy;
 import tk.mybatis.mapper.common.Mapper;
 
-public interface SerinusStrategyMapper extends Mapper<SerinusStrategy> {
+import java.util.List;
 
-    @Select(value = {"select count(0)",
-            "from `tb_serinus_strategy`",
-            "where product = ${product}"})
+public interface SerinusStrategyMapper extends Mapper<SerinusStrategy> {
     int selectCountByProduct(@Param("product") String product);
+
+    List<SerinusStrategy> selectAllEnabledByProduct(@Param("product") String product);
 }

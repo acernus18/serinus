@@ -19,7 +19,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -68,6 +68,14 @@ public class DispatchService {
                 ":" + (strategy.getAlwaysReturn() ? 1 : 0);
 
         return args.getBytes();
+    }
+
+    private boolean withinValidDatetime(Date now, Date begin, Date end) {
+        if (now == null) {
+            now = new Date();
+        }
+
+        return now.before(end) && now.after(begin);
     }
 
     public List<JSON> dispatch(List<SerinusStrategy> strategies, Map<String, String> params) {

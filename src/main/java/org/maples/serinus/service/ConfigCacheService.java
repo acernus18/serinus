@@ -8,22 +8,17 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.BeanUtils;
 import org.maples.serinus.config.ConstConfig;
 import org.maples.serinus.model.SerinusConfig;
-import org.maples.serinus.model.SerinusStrategy;
 import org.maples.serinus.repository.SerinusConfigMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,15 +27,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 @Slf4j
 @Service
-public class CacheService {
+public class ConfigCacheService {
     private static final Pattern SLAVE_INFO_MATCHER = Pattern.compile("^ip=(.*),port=(\\d+),.*$");
     private static final Pattern SLAVE_SYNC_MATCHER = Pattern.compile("master_sync_in_progress:(\\d)");
     private static final String CACHE_PREFIX = "CONF:SERVICE:";
@@ -59,9 +52,6 @@ public class CacheService {
     }
 
     @Autowired
-    private StrategyService strategyService;
-
-    @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
     @Autowired
@@ -73,60 +63,11 @@ public class CacheService {
     @Autowired
     private ConstConfig constConfig;
 
-    private ConcurrentMap<String, List<SerinusStrategy>> cacheMap = new ConcurrentHashMap<>();
-
     @PostConstruct
     public void postConstruct() {
         for (String path : constConfig.getZkSubscribePath()) {
             zkClientService.subscribe(path, x -> log.info("Recv message [{}]", x));
         }
-    }
-
-    private List<SerinusStrategy> createResults(List<SerinusStrategy> values) {
-        List<SerinusStrategy> results = new ArrayList<>(values.size());
-        for (SerinusStrategy value : values) {
-            SerinusStrategy temp = new SerinusStrategy();
-            try {
-                BeanUtils.copyProperties(temp, value);
-                results.add(temp);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                log.warn(e.getLocalizedMessage());
-            }
-        }
-        return results;
-    }
-
-    public List<SerinusStrategy> listStrategiesByProduct(String product) {
-
-        if (cacheMap.containsKey(product)) {
-            return createResults(cacheMap.get(product));
-        }
-
-        Boolean hasCacheKey = redisTemplate.hasKey(product);
-        if (hasCacheKey != null && hasCacheKey) {
-            Long size = redisTemplate.boundListOps(product).size();
-
-            if (size == null) {
-                throw new NullPointerException();
-            }
-
-            List<SerinusStrategy> results = new ArrayList<>();
-            for (long i = 0; i < size; i++) {
-                String strategy = redisTemplate.boundListOps(product).index(i);
-                results.add(JSON.parseObject(strategy, SerinusStrategy.class));
-            }
-
-            cacheMap.put(product, results);
-        } else {
-            List<SerinusStrategy> dbObjects = strategyService.getSerinusStrategyList().get(product);
-            for (SerinusStrategy dbObject : dbObjects) {
-                redisTemplate.boundListOps(product).leftPush(JSON.toJSONString(dbObject));
-            }
-
-            cacheMap.put(product, dbObjects);
-        }
-
-        return createResults(cacheMap.get(product));
     }
 
     public Map<String, Integer> fetchSlaveStatus() {

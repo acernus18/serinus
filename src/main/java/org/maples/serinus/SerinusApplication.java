@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 // @EnableCaching
 @SpringBootApplication
-@EnableDiscoveryClient
+// @EnableDiscoveryClient
 @EnableTransactionManagement
 public class SerinusApplication {
 

@@ -16,4 +16,26 @@
         <result column="enabled" jdbcType="BIT" property="enabled"/>
         <result column="content" jdbcType="LONGVARCHAR" property="content"/>
     </resultMap>
+
+    <select id="selectCountByProduct" resultType="int">
+        select count(0)
+        from `tb_serinus_strategy`
+        where product = '${product}'
+    </select>
+
+    <select id="selectAllEnabledByProduct" resultMap="BaseResultMap">
+        select `uuid`,
+               `type`,
+               `preset_type`,
+               `product`,
+               `max_count`,
+               `start_at`,
+               `end_at`,
+               `filter`,
+               `always_return`,
+               `content`
+        from `tb_serinus_strategy`
+        where product = '${product}'
+          and enabled = 1;
+    </select>
 </mapper>
