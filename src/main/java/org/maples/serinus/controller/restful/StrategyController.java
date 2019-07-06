@@ -31,9 +31,11 @@ public class StrategyController {
     private DispatchService dispatchService;
 
 
-    @PostMapping("/save")
-    public ResultBean<Boolean> saveStrategy(@RequestBody SerinusStrategy strategy) {
+    @PostMapping("/{product}/save")
+    public ResultBean<Boolean> saveStrategy(@PathVariable("product") String product,
+                                            @RequestBody SerinusStrategy strategy) {
         try {
+            strategy.setProduct(product);
             strategyService.saveStrategy(strategy);
         } catch (Throwable e) {
             log.error(e.getLocalizedMessage());
@@ -63,8 +65,7 @@ public class StrategyController {
 
         parameters.put("deviceID", deviceID);
 
-        Map<String, List<SerinusStrategy>> serinusStrategyList = strategyService.getSerinusStrategyList();
-        List<SerinusStrategy> strategies = serinusStrategyList.get(product);
+        List<SerinusStrategy> strategies = strategyService.getSerinusStrategiesByProduct(product);
         return dispatchService.dispatch(strategies, parameters);
     }
 }

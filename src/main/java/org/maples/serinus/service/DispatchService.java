@@ -70,11 +70,8 @@ public class DispatchService {
         return args.getBytes();
     }
 
-    private boolean withinValidDatetime(Date now, Date begin, Date end) {
-        if (now == null) {
-            now = new Date();
-        }
-
+    private boolean withinValidDatetime(Date begin, Date end) {
+        Date now = new Date();
         return now.before(end) && now.after(begin);
     }
 
@@ -86,14 +83,29 @@ public class DispatchService {
             return resultList;
         }
 
+        // filter strategies by condition, date, and enabled flag;
         List<SerinusStrategy> filteredStrategies = new ArrayList<>();
         for (SerinusStrategy strategy : strategies) {
+
+            if (!strategy.getEnabled()) {
+                log.debug("Drop {}, because of its not enabled.", strategy.getUuid());
+                continue;
+            }
+
+            if (!withinValidDatetime(strategy.getStartAt(), strategy.getEndAt())) {
+                log.debug("Drop {}, because of its not within valid date.", strategy.getUuid());
+                continue;
+            }
+
             String condition = strategy.getFilter();
             if (SerinusHelper.compare(JSON.parseObject(condition), params)) {
                 filteredStrategies.add(strategy);
+            } else {
+                log.debug("Drop {}, because of its condition not match.", strategy.getUuid());
             }
         }
 
+        // filter strategies by history, type and white or black list;
         List<Object> results = redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
 
             for (SerinusStrategy strategy : filteredStrategies) {
@@ -105,21 +117,25 @@ public class DispatchService {
             return null;
         });
 
+        // parse json object from redis searching result;
         for (int i = 0; i < filteredStrategies.size(); i++) {
             Object result = results.get(i);
             if (result instanceof String) {
                 int dispatchResult = Integer.parseInt((String) result);
+                SerinusStrategy strategy = filteredStrategies.get(i);
 
                 if (dispatchResult > 0) {
-                    SerinusStrategy strategy = filteredStrategies.get(i);
 
                     if (strategy.getType() != 2) {
                         resultList.add(JSON.parseObject(strategy.getContent()));
                     } else {
+                        // for ab type, result represent index of according ab content;
                         JSONArray abArray = JSON.parseArray(strategy.getContent());
                         JSONObject abContent = abArray.getJSONObject(dispatchResult);
                         resultList.add(abContent);
                     }
+                } else {
+                    log.debug("Drop {}, because of its redis filter.", strategy.getUuid());
                 }
             }
         }
