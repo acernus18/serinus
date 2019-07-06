@@ -1,6 +1,5 @@
 package org.maples.serinus.controller.restful;
 
-import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.maples.serinus.model.SerinusStrategy;
 import org.maples.serinus.service.DispatchService;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +44,7 @@ public class StrategyController {
 
     @GetMapping("/{product}")
     public Object listStrategyInProduct(@PathVariable("product") String product) {
-        return strategyService.getSerinusStrategyMap();
+        return new ResultBean<>(0, "Success", strategyService.getSerinusStrategyList().get(product));
     }
 
     @GetMapping("/dispatch/{product}/{deviceID}")

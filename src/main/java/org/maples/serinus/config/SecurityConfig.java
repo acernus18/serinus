@@ -8,7 +8,6 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.maples.serinus.component.RememberInterceptor;
 import org.maples.serinus.component.SecurityRealm;
@@ -28,6 +27,7 @@ import java.util.Map;
 @Slf4j
 @Configuration
 public class SecurityConfig implements WebMvcConfigurer {
+    private static final boolean ENABLE = false;
 
     @Autowired
     private SessionAccessor sessionDAO;
@@ -87,14 +87,17 @@ public class SecurityConfig implements WebMvcConfigurer {
         shiroFilterFactoryBean.setLoginUrl("/login/");
 
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
-        filterChainDefinitionMap.put("/webjars/**", "anon");
-        filterChainDefinitionMap.put("/static/**", "anon");
-        filterChainDefinitionMap.put("/passport/**", "anon");
 
-        filterChainDefinitionMap.put("/index", "anon");
-        filterChainDefinitionMap.put("/register", "anon");
-
-        filterChainDefinitionMap.put("/**", "authc");
+        if (ENABLE) {
+            filterChainDefinitionMap.put("/webjars/**", "anon");
+            filterChainDefinitionMap.put("/static/**", "anon");
+            filterChainDefinitionMap.put("/passport/**", "anon");
+            filterChainDefinitionMap.put("/index", "anon");
+            filterChainDefinitionMap.put("/register", "anon");
+            filterChainDefinitionMap.put("/**", "authc");
+        } else {
+            filterChainDefinitionMap.put("/**", "anon");
+        }
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 

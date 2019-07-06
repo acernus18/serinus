@@ -4,15 +4,6 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.8/vue.min.js"></script>
 
-    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">-->
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>-->
-    <!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>-->
-
-    <!--<link rel="stylesheet" href="https://cdn.staticfile.org/codemirror/5.46.0/codemirror.css">-->
-    <!--<script src="https://cdn.staticfile.org/codemirror/5.46.0/codemirror.js"></script>-->
-    <!--<script src="https://cdn.staticfile.org/codemirror/5.46.0/addon/selection/active-line.js"></script>-->
-    <!--<script src="https://cdn.staticfile.org/codemirror/5.46.0/addon/edit/matchbrackets.js"></script>-->
-    <!--<script src="https://cdn.staticfile.org/codemirror/5.46.0/mode/javascript/javascript.js"></script>-->
     <script src="./scripts/common.js"></script>
 </head>
 <body>
@@ -95,6 +86,7 @@
         <label>
             Content
             <textarea id="content" v-model="content"></textarea>
+            <button>EDIT</button>
         </label>
         <br/>
 
@@ -110,6 +102,13 @@
 </form>
 </body>
 <script>
+    // const editor = CodeMirror.fromTextArea(document.getElementById("content"), {
+    //     lineNumbers: true,
+    //     styleActiveLine: true,
+    //     matchBrackets: true,
+    //     indentUnit: 4,
+    // });
+
     let application = new Vue({
         el: '#app',
 
@@ -157,6 +156,11 @@
                 let filter = {};
 
                 this.filters.forEach(v => {
+                    // If filter condition is not enough, drop this filter;
+                    if (v.key.length === 0 || v.operator.length === 0 || v.value.length === 0) {
+                        return;
+                    }
+
                     if (!filter.hasOwnProperty(v.key)) {
                         filter[v.key] = {};
                     }
@@ -175,13 +179,6 @@
             }
         }
     });
-
-    // const editor = CodeMirror.fromTextArea(document.getElementById("content"), {
-    //     lineNumbers: true,
-    //     styleActiveLine: true,
-    //     matchBrackets: true,
-    //     indentUnit: 4,
-    // });
 
 </script>
 </html>
