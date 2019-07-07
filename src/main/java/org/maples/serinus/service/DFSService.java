@@ -20,21 +20,25 @@ import java.io.IOException;
 @Slf4j
 @Service
 public class DFSService {
+    private static final boolean ENABLE = false;
+
     private TrackerServer trackerServer;
     private StorageServer storageServer;
 
     @PostConstruct
     public void postConstruct() {
-        try {
-            String configFile = ResourceUtils.getFile("classpath:properties/dfs_client.conf").getAbsolutePath();
-            log.info("Load fast dfs config file from = {}", configFile);
-            ClientGlobal.init(configFile);
+        if (ENABLE) {
+            try {
+                String configFile = ResourceUtils.getFile("classpath:properties/dfs_client.conf").getAbsolutePath();
+                log.info("Load fast dfs config file from = {}", configFile);
+                ClientGlobal.init(configFile);
 
-            TrackerClient trackerClient = new TrackerClient();
-            trackerServer = trackerClient.getConnection();
-            storageServer = trackerClient.getStoreStorage(trackerServer);
-        } catch (IOException | MyException e) {
-            log.error(e.getLocalizedMessage());
+                TrackerClient trackerClient = new TrackerClient();
+                trackerServer = trackerClient.getConnection();
+                storageServer = trackerClient.getStoreStorage(trackerServer);
+            } catch (IOException | MyException e) {
+                log.error(e.getLocalizedMessage());
+            }
         }
     }
 

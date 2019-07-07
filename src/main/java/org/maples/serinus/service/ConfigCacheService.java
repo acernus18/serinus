@@ -58,7 +58,7 @@ public class ConfigCacheService {
     private SerinusConfigMapper mapper;
 
     @Autowired
-    private ZKClientService zkClientService;
+    private CoordinateService coordinateService;
 
     @Autowired
     private ConstConfig constConfig;
@@ -66,7 +66,7 @@ public class ConfigCacheService {
     @PostConstruct
     public void postConstruct() {
         for (String path : constConfig.getZkSubscribePath()) {
-            zkClientService.subscribe(path, x -> log.info("Recv message [{}]", x));
+            coordinateService.subscribe(path, x -> log.info("Recv message [{}]", x));
         }
     }
 

@@ -12,29 +12,27 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static org.junit.Assert.*;
-
 @Slf4j
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class ZKClientServiceTest {
+public class CoordinateServiceTest {
 
     @Autowired
-    private ZKClientService zkClientService;
+    private CoordinateService coordinateService;
 
     @Test
     public void subscribe() throws InterruptedException {
         Lock lock = new ReentrantLock();
         Condition condition = lock.newCondition();
         lock.lock();
-        zkClientService.subscribe("/hello/info", log::info);
+        coordinateService.subscribe("/hello/info", log::info);
         condition.await();
     }
 
     @Test
     public void subscribe2() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        zkClientService.subscribe("/hello/info", log::info);
+        coordinateService.subscribe("/hello/info", log::info);
         latch.await();
     }
 }

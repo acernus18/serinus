@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Slf4j
 public class RedisTest {
@@ -27,6 +29,14 @@ public class RedisTest {
         factory.afterPropertiesSet();
         RedisTemplate<String, String> redisClient = new RedisTemplate<>();
         redisClient.setConnectionFactory(factory);
+
+        // use stringSerializer to avoid weird code like '\xac\xed\x00\x05t\x00\x0f';
+        RedisSerializer stringSerializer = new StringRedisSerializer();
+        redisClient.setKeySerializer(stringSerializer);
+        redisClient.setValueSerializer(stringSerializer);
+        redisClient.setHashKeySerializer(stringSerializer);
+        redisClient.setHashValueSerializer(stringSerializer);
+
         redisClient.afterPropertiesSet();
 
         log.debug(redisClient.opsForValue().get("maples_test_key"));
