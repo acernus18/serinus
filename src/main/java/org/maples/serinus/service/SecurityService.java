@@ -15,7 +15,6 @@ import org.maples.serinus.model.SerinusUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,33 +34,39 @@ public class SecurityService {
     @Autowired
     private UserService userService;
 
+    private DefaultFilterChainManager getFilterChainManager() throws Exception {
+        DefaultFilterChainManager defaultFilterChainManager = null;
+
+        AbstractShiroFilter filter = (AbstractShiroFilter) shiroFilterFactoryBean.getObject();
+
+        if (filter == null) {
+            throw new NullPointerException("Cannot get filter");
+        }
+
+        FilterChainResolver resolver = filter.getFilterChainResolver();
+        if (resolver instanceof PathMatchingFilterChainResolver) {
+            FilterChainManager manager = ((PathMatchingFilterChainResolver) resolver).getFilterChainManager();
+            if (manager instanceof DefaultFilterChainManager) {
+                defaultFilterChainManager = (DefaultFilterChainManager) manager;
+            }
+        }
+        return defaultFilterChainManager;
+    }
+
     public synchronized void updatePermission() {
         Map<String, String> chainDefinitions = permissionService.loadFilterChainDefinitions();
 
         try {
-            AbstractShiroFilter filter = (AbstractShiroFilter) shiroFilterFactoryBean.getObject();
+            DefaultFilterChainManager filterChainManager = getFilterChainManager();
 
-            if (filter == null) {
-                throw new Exception("Cannot get filter");
-            }
+            filterChainManager.getFilterChains().clear();
 
-            FilterChainResolver resolver = filter.getFilterChainResolver();
-            if (resolver instanceof PathMatchingFilterChainResolver) {
-                FilterChainManager manager = ((PathMatchingFilterChainResolver) resolver).getFilterChainManager();
-
-                if (manager instanceof DefaultFilterChainManager) {
-                    DefaultFilterChainManager filterChainManager = (DefaultFilterChainManager) manager;
-                    filterChainManager.getFilterChains().clear();
-
-                    shiroFilterFactoryBean.getFilterChainDefinitionMap().clear();
-                    shiroFilterFactoryBean.setFilterChainDefinitionMap(chainDefinitions);
-                    shiroFilterFactoryBean.getFilterChainDefinitionMap().forEach((k, v) -> {
-                        log.info("Updating url {}, permission = {}", k, v);
-                        filterChainManager.createChain(k, v.trim().replace(" ", ""));
-                    });
-                }
-            }
-
+            shiroFilterFactoryBean.getFilterChainDefinitionMap().clear();
+            shiroFilterFactoryBean.setFilterChainDefinitionMap(chainDefinitions);
+            shiroFilterFactoryBean.getFilterChainDefinitionMap().forEach((k, v) -> {
+                log.info("Updating url {}, permission = {}", k, v);
+                filterChainManager.createChain(k, v.trim().replace(" ", ""));
+            });
         } catch (Exception e) {
             throw new RuntimeException("get ShiroFilter from shiroFilterFactoryBean error");
         }
