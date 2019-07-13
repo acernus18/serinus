@@ -14,16 +14,20 @@ import org.maples.serinus.repository.UserRoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @Service
 public class PermissionService {
+
+    private static final boolean ENABLE_ACCESS_CONTROL = false;
 
     @Autowired
     private SerinusUserMapper userMapper;
@@ -176,5 +180,50 @@ public class PermissionService {
         }
 
         return roleUserMap;
+    }
+
+    public Map<String, String> getUrlRoleMapping() {
+        Map<String, String> result = new HashMap<>();
+
+        List<RoleResources> roleResources = roleResourcesMapper.selectAll();
+
+        for (RoleResources roleResource : roleResources) {
+            int resourcesId = roleResource.getResourcesId();
+            int roleId = roleResource.getRoleId();
+
+            SerinusResources resources = resourcesMapper.selectByPrimaryKey(resourcesId);
+            SerinusRole role = roleMapper.selectByPrimaryKey(roleId);
+
+            result.put(resources.getUrl(), role.getName());
+        }
+
+        return result;
+    }
+
+    public Map<String, String> loadFilterChainDefinitions() {
+
+        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
+
+        if (ENABLE_ACCESS_CONTROL) {
+            filterChainDefinitionMap.put("/webjars/**", "anon");
+            filterChainDefinitionMap.put("/static/**", "anon");
+            filterChainDefinitionMap.put("/passport/**", "anon");
+            filterChainDefinitionMap.put("/index", "anon");
+            filterChainDefinitionMap.put("/register", "anon");
+            filterChainDefinitionMap.put("/**", "authc");
+
+            List<SerinusResources> resourcesList = resourcesMapper.selectAll();
+            for (SerinusResources resources : resourcesList) {
+                if (!StringUtils.isEmpty(resources.getUrl()) && !StringUtils.isEmpty(resources.getPermission())) {
+                    String permission = "perms[" + resources.getPermission() + "]";
+                    filterChainDefinitionMap.put(resources.getUrl(), permission);
+                }
+            }
+            filterChainDefinitionMap.put("/**", "user");
+        } else {
+            filterChainDefinitionMap.put("/**", "anon");
+        }
+
+        return filterChainDefinitionMap;
     }
 }

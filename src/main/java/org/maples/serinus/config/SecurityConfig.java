@@ -12,6 +12,7 @@ import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.maples.serinus.component.RememberInterceptor;
 import org.maples.serinus.component.SecurityRealm;
 import org.maples.serinus.component.SessionAccessor;
+import org.maples.serinus.service.PermissionService;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
@@ -21,14 +22,13 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.security.Permission;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Slf4j
 @Configuration
 public class SecurityConfig implements WebMvcConfigurer {
-    private static final boolean ENABLE = false;
-
     @Autowired
     private SessionAccessor sessionDAO;
 
@@ -37,6 +37,9 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     @Autowired
     private RememberInterceptor rememberInterceptor;
+
+    @Autowired
+    private PermissionService permissionService;
 
     private CookieRememberMeManager rememberMeManager() {
         CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
@@ -86,19 +89,7 @@ public class SecurityConfig implements WebMvcConfigurer {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         shiroFilterFactoryBean.setLoginUrl("/login/");
 
-        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
-
-        if (ENABLE) {
-            filterChainDefinitionMap.put("/webjars/**", "anon");
-            filterChainDefinitionMap.put("/static/**", "anon");
-            filterChainDefinitionMap.put("/passport/**", "anon");
-            filterChainDefinitionMap.put("/index", "anon");
-            filterChainDefinitionMap.put("/register", "anon");
-            filterChainDefinitionMap.put("/**", "authc");
-        } else {
-            filterChainDefinitionMap.put("/**", "anon");
-        }
-
+        Map<String, String> filterChainDefinitionMap = permissionService.loadFilterChainDefinitions();
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
         return shiroFilterFactoryBean;

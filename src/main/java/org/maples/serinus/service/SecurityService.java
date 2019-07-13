@@ -15,18 +15,16 @@ import org.maples.serinus.model.SerinusUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @Service
 public class SecurityService {
 
     @Autowired
-    private ResourcesService resourcesService;
+    private PermissionService permissionService;
 
     @Autowired
     private ShiroFilterFactoryBean shiroFilterFactoryBean;
@@ -37,17 +35,9 @@ public class SecurityService {
     @Autowired
     private UserService userService;
 
-    private Lock lock;
+    public synchronized void updatePermission() {
+        Map<String, String> chainDefinitions = permissionService.loadFilterChainDefinitions();
 
-    @PostConstruct
-    public void postConstruct() {
-        lock = new ReentrantLock();
-    }
-
-    public void updatePermission() {
-        Map<String, String> chainDefinitions = resourcesService.loadFilterChainDefinitions();
-
-        lock.lock();
         try {
             AbstractShiroFilter filter = (AbstractShiroFilter) shiroFilterFactoryBean.getObject();
 
@@ -74,8 +64,6 @@ public class SecurityService {
 
         } catch (Exception e) {
             throw new RuntimeException("get ShiroFilter from shiroFilterFactoryBean error");
-        } finally {
-            lock.unlock();
         }
     }
 
