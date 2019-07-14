@@ -2,7 +2,6 @@ package org.maples.serinus.controller.restful;
 
 import lombok.extern.slf4j.Slf4j;
 import org.maples.serinus.model.SerinusStrategy;
-import org.maples.serinus.service.DispatchService;
 import org.maples.serinus.service.StrategyService;
 import org.maples.serinus.utility.ResultBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +25,6 @@ public class StrategyController {
 
     @Autowired
     private StrategyService strategyService;
-
-    @Autowired
-    private DispatchService dispatchService;
-
 
     @PostMapping("/{product}/save")
     public ResultBean<Boolean> saveStrategy(@PathVariable("product") String product,
@@ -66,6 +61,6 @@ public class StrategyController {
         parameters.put("deviceID", deviceID);
 
         List<SerinusStrategy> strategies = strategyService.getSerinusStrategiesByProduct(product);
-        return dispatchService.dispatch(strategies, parameters);
+        return strategyService.dispatch(strategies, parameters);
     }
 }

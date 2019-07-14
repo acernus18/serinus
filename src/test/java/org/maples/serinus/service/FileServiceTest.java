@@ -18,10 +18,10 @@ import java.io.FileInputStream;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class DFSServiceTest {
+public class FileServiceTest {
 
     @Autowired
-    private DFSService dfsService;
+    private FileService fileService;
 
     @Test
     public void upload() throws Exception {
@@ -36,7 +36,7 @@ public class DFSServiceTest {
         fastDFSFile.setUploader("maples");
         fastDFSFile.setMd5("");
 
-        dfsService.upload(fastDFSFile, content);
+        fileService.upload(fastDFSFile, content);
         log.info(JSON.toJSONString(fastDFSFile, true));
     }
 
@@ -46,7 +46,7 @@ public class DFSServiceTest {
 
         fastDFSFile.setGroupName("group0");
         fastDFSFile.setRemoteFilename("M00/00/00/wKgBfVzuMmaACpsrAF0gDH_xONA245.mp4");
-        byte[] contents = dfsService.download(fastDFSFile);
+        byte[] contents = fileService.download(fastDFSFile);
 
         FileUtils.writeByteArrayToFile(new File("D:\\maple\\Downloads\\downloadTest.mp4"), contents);
     }

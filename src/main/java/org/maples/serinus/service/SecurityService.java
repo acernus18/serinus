@@ -53,6 +53,10 @@ public class SecurityService {
         return defaultFilterChainManager;
     }
 
+    public Map<String, String> getFilterChainDefinitionMap() {
+        return shiroFilterFactoryBean.getFilterChainDefinitionMap();
+    }
+
     public synchronized void updatePermission() {
         Map<String, String> chainDefinitions = permissionService.loadFilterChainDefinitions();
 
