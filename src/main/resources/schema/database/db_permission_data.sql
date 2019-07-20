@@ -1,6 +1,8 @@
-INSERT INTO `tb_serinus_user`(id, principal, credential, nickname, mobile, email, birthday, gender, avatar, user_type,
-                              reg_ip, last_login_ip, last_login_time, login_count, remark, status, create_time,
-                              update_time)
-VALUES ('1', 'root', 'CGUx1FN++xS+4wNDFeN6DA==', '超级管理员', '15151551516', '843977358@qq.com', null, null,
-        '', 'ROOT', null, '127.0.0.1', '2018-05-17 13:09:35', '228', null,
-        '1', '2018-01-02 09:32:15', '2018-05-17 13:09:35');
+insert into tb_serinus_role
+values (null, 'lispon_admin', 'test', 0, 0, current_timestamp(), current_timestamp());
+
+insert into tb_serinus_resources
+values (null, 'name', 'type', '/strategy/operator/lispon/', 'permission', 0, 0, 0, 0, 'http://hello', current_timestamp(),
+        current_timestamp());
+
+insert into tb_serinus_role_resources values (null, 10, 8, 0, current_timestamp(), current_timestamp());

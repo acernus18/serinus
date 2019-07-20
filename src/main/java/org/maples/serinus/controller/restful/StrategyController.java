@@ -26,7 +26,7 @@ public class StrategyController {
     @Autowired
     private StrategyService strategyService;
 
-    @PostMapping("/{product}/save")
+    @PostMapping("/operator/{product}/operate/save")
     public ResultBean<Boolean> saveStrategy(@PathVariable("product") String product,
                                             @RequestBody SerinusStrategy strategy) {
         try {
@@ -39,7 +39,7 @@ public class StrategyController {
         return new ResultBean<>(0, "Success", true);
     }
 
-    @GetMapping("/{product}")
+    @GetMapping("/operator/{product}")
     public Object listStrategyInProduct(@PathVariable("product") String product) {
         return new ResultBean<>(0, "Success", strategyService.getSerinusStrategyList().get(product));
     }

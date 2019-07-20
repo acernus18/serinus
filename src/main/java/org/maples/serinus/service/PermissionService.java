@@ -182,8 +182,8 @@ public class PermissionService {
         return roleUserMap;
     }
 
-    public Map<String, String> getUrlRoleMapping() {
-        Map<String, String> result = new HashMap<>();
+    public Map<String, List<String>> getUrlRoleMapping() {
+        Map<String, List<String>> result = new HashMap<>();
 
         List<RoleResources> roleResources = roleResourcesMapper.selectAll();
 
@@ -194,7 +194,8 @@ public class PermissionService {
             SerinusResources resources = resourcesMapper.selectByPrimaryKey(resourcesId);
             SerinusRole role = roleMapper.selectByPrimaryKey(roleId);
 
-            result.put(resources.getUrl(), role.getName());
+            result.putIfAbsent(resources.getUrl(), new ArrayList<>());
+            result.get(resources.getUrl()).add(role.getName());
         }
 
         return result;
@@ -209,17 +210,8 @@ public class PermissionService {
             filterChainDefinitionMap.put("/static/**", "anon");
             filterChainDefinitionMap.put("/passport/**", "anon");
             filterChainDefinitionMap.put("/index", "anon");
-            filterChainDefinitionMap.put("/register", "anon");
-            filterChainDefinitionMap.put("/**", "authc");
 
-            List<SerinusResources> resourcesList = resourcesMapper.selectAll();
-            for (SerinusResources resources : resourcesList) {
-                if (!StringUtils.isEmpty(resources.getUrl()) && !StringUtils.isEmpty(resources.getPermission())) {
-                    String permission = "perms[" + resources.getPermission() + "]";
-                    filterChainDefinitionMap.put(resources.getUrl(), permission);
-                }
-            }
-            filterChainDefinitionMap.put("/**", "user");
+            filterChainDefinitionMap.put("/**", "authc");
         } else {
             filterChainDefinitionMap.put("/**", "anon");
         }
