@@ -64,12 +64,12 @@ public class ConfigController {
                        @RequestParam(name = "sort_key") String sortKey,
                        @RequestParam(name = "sort_order") String sortOrder) {
 
-        int pageValue = Integer.valueOf(page);
-        int pageSizeValue = Integer.valueOf(length);
+        int pageValue = Integer.parseInt(page);
+        int pageSizeValue = Integer.parseInt(length);
 
         Integer statusValue = null;
         if (StringUtils.isNotBlank(status)) {
-            int value = Integer.valueOf(status);
+            int value = Integer.parseInt(status);
 
             if (value == 0 || value == 1) {
                 statusValue = value;
