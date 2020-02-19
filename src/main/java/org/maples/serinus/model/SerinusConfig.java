@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.maples.serinus.utility.ParseUtils;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.DigestUtils;

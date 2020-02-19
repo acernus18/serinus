@@ -1,15 +1,17 @@
-package org.maples.serinus.controller.restful;
+package org.maples.serinus.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.maples.serinus.model.SerinusStrategy;
 import org.maples.serinus.service.StrategyService;
 import org.maples.serinus.utility.ResultBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,14 +21,26 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@RestController
+@Controller
 @RequestMapping("/strategy")
 public class StrategyController {
 
     @Autowired
     private StrategyService strategyService;
 
-    @PostMapping("/operator/{product}/operate/save")
+    @GetMapping("/index")
+    public String strategyIndex() {
+        return "strategy/index";
+    }
+
+    @GetMapping("/{product}")
+    @ResponseBody
+    public Object listStrategyInProduct(@PathVariable("product") String product) {
+        return new ResultBean<>(0, "Success", strategyService.getSerinusStrategyList().get(product));
+    }
+
+    @PostMapping("/{product}/save")
+    @ResponseBody
     public ResultBean<Boolean> saveStrategy(@PathVariable("product") String product,
                                             @RequestBody SerinusStrategy strategy) {
         try {
@@ -39,12 +53,20 @@ public class StrategyController {
         return new ResultBean<>(0, "Success", true);
     }
 
-    @GetMapping("/operator/{product}")
-    public Object listStrategyInProduct(@PathVariable("product") String product) {
-        return new ResultBean<>(0, "Success", strategyService.getSerinusStrategyList().get(product));
-    }
+    // delete
+    // update
+    // search
+    // active
+    // inactive
+    // export
+    // import dispatched list
+    // import black and white list
+    // add dispatched list
+    // adjust
+
 
     @GetMapping("/dispatch/{product}/{deviceID}")
+    @ResponseBody
     public Object dispatch(@PathVariable("product") String product,
                            @PathVariable("deviceID") String deviceID,
                            HttpServletRequest request) {

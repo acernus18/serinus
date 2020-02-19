@@ -66,7 +66,7 @@ public class ConfigCacheService {
     @PostConstruct
     public void postConstruct() {
         for (String path : constConfig.getZkSubscribePath()) {
-            coordinateService.subscribe(path, x -> log.info("Recv message [{}]", x));
+            // coordinateService.subscribe(path, x -> log.info("Recv message [{}]", x));
         }
     }
 
@@ -80,7 +80,7 @@ public class ConfigCacheService {
             try (StatefulRedisConnection<String, String> connection = client.connect()) {
                 Matcher matcher = SLAVE_SYNC_MATCHER.matcher(connection.sync().info("Replication"));
                 if (matcher.find()) {
-                    switch (Integer.valueOf(matcher.group(1))) {
+                    switch (Integer.parseInt(matcher.group(1))) {
                         case 0: {
                             result.put(url, SLAVE_STATUS.SYNC.getValue());
                             break;
@@ -183,7 +183,7 @@ public class ConfigCacheService {
             throw new RuntimeException("Cannot get master properties;");
         }
 
-        int slaveNumbers = Integer.valueOf(properties.getProperty("connected_slaves"));
+        int slaveNumbers = Integer.parseInt(properties.getProperty("connected_slaves"));
         List<String> redisClientsURL = new ArrayList<>(slaveNumbers);
 
         for (int i = 0; i < slaveNumbers; i++) {

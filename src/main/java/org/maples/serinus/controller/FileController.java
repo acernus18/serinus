@@ -1,4 +1,4 @@
-package org.maples.serinus.controller.restful;
+package org.maples.serinus.controller;
 
 import org.maples.serinus.model.SerinusFileMeta;
 import org.maples.serinus.service.FileService;

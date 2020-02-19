@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.8/vue.min.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/codemirror/5.46.0/codemirror.css">
+    <script src="https://cdn.staticfile.org/codemirror/5.46.0/codemirror.js"></script>
+    <script src="https://cdn.staticfile.org/codemirror/5.46.0/addon/selection/active-line.js"></script>
+    <script src="https://cdn.staticfile.org/codemirror/5.46.0/addon/edit/matchbrackets.js"></script>
+    <script src="https://cdn.staticfile.org/codemirror/5.46.0/mode/javascript/javascript.js"></script>
+</head>
+<body class="bg-light">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-8">
+            <div>
+                <div class="card">
+                    <div class="card-header"></div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="search-start-at">StartAt</label>
+                                <input type="datetime-local" id="search-start-at" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="search-end-at">EndAt</label>
+                                <input type="datetime-local" id="search-end-at" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="search-title">Title</label>
+                            <input type="text" id="search-title" class="form-control">
+                        </div>
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+            <br>
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        Featured
+                        <button class="btn btn btn-outline-info">Up</button>
+                        <button class="btn btn btn-outline-info">Down</button>
+                        <button class="btn btn btn-outline-info">Top</button>
+                        <button class="btn btn btn-outline-info">Bottom</button>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table" style="table-layout:fixed;">
+                            <thead>
+                            <tr>
+                                <th>msg</th>
+                                <th>startAt - endAt</th>
+                                <th>status</th>
+                                <th>other</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td class="align-middle">
+                                    <label for="code">
+                                        ID: 123
+                                    </label>
+                                    <textarea class="form-control" id="code" rows="4" disabled>123</textarea>
+                                </td>
+                                <td class="align-middle">
+                                    <p>2019/4/1 00:00:00</p>
+                                    <p>2019/4/1 00:00:00</p>
+                                </td>
+                                <td class="align-middle">
+                                    <button type="button" class="btn btn-outline-primary">Enable</button>
+                                    <br/>
+                                    <br/>
+                                    <button type="button" class="btn btn-outline-danger">Disable</button>
+                                </td>
+                                <td class="align-middle">
+                                    <p>
+                                        <b>type：</b>
+                                        <span>普通</span>
+                                    </p>
+                                    <p>
+                                        <b>max-count：</b> 100
+                                    </p>
+                                    <p>
+                                        <b>popped：</b><span>-</span>&nbsp;&nbsp;
+                                        <button type="button" class="btn btn-primary btn-sm">
+                                            Add
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm">
+                                            Download
+                                        </button>
+                                    </p>
+                                    <p>
+                                        <b>actions：</b>
+                                        <button type="button" class="btn btn-primary btn-sm">
+                                            Export
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm">
+                                            Delete
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm">
+                                            Copy
+                                        </button>
+                                    </p>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="card-footer text-muted">
+                        2 days ago
+                    </div>
+                </div>
+                <br />
+                <div class="card">
+                    <div class="card-header">
+                        Featured
+                        <button class="btn btn btn-outline-info">Up</button>
+                        <button class="btn btn btn-outline-info">Down</button>
+                        <button class="btn btn btn-outline-info">Top</button>
+                        <button class="btn btn btn-outline-info">Bottom</button>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table" style="table-layout:fixed;">
+                            <thead>
+                            <tr>
+                                <th>msg</th>
+                                <th>startAt - endAt</th>
+                                <th>status</th>
+                                <th>other</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td class="align-middle">
+                                    <label for="code">
+                                        ID: 123
+                                    </label>
+                                    <textarea class="form-control" id="code" rows="4" disabled></textarea>
+                                </td>
+                                <td class="align-middle">
+                                    <p>2019/4/1 00:00:00</p>
+                                    <p>2019/4/1 00:00:00</p>
+                                </td>
+                                <td class="align-middle">
+                                    <button type="button" class="btn btn-outline-primary">Enable</button>
+                                    <br/>
+                                    <br/>
+                                    <button type="button" class="btn btn-outline-danger">Disable</button>
+                                </td>
+                                <td class="align-middle">
+                                    <p>
+                                        <b>type：</b>
+                                        <span>普通</span>
+                                    </p>
+                                    <p>
+                                        <b>max-count：</b> 100
+                                    </p>
+                                    <p>
+                                        <b>popped：</b><span>-</span>&nbsp;&nbsp;
+                                        <button type="button" class="btn btn-primary btn-sm">
+                                            Add
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm">
+                                            Download
+                                        </button>
+                                    </p>
+                                    <p>
+                                        <b>actions：</b>
+                                        <button type="button" class="btn btn-primary btn-sm">
+                                            Export
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm">
+                                            Delete
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm">
+                                            Copy
+                                        </button>
+                                    </p>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="card-footer text-muted">
+                        2 days ago
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header">
+                    编辑
+                </div>
+                <div class="card-body">
+                    <div id="app">
+                        <div class="form-group">
+                            <label for="form-type">Type</label>
+                            <select v-model="type" id="form-type" class="form-control">
+                                <option value="0">Normal</option>
+                                <option value="1">Full</option>
+                                <option value="2">AB-Test</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="form-preset-type">Preset Type</label>
+                            <select v-model="presetType" id="form-preset-type" class="form-control">
+                                <option value="0">Normal</option>
+                                <option value="1">Black</option>
+                                <option value="2">White</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="form-title">Title</label>
+                            <input id="form-title" type="text" v-model="title" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="form-max-count">Max Count</label>
+                            <input type="number" v-model="maxCount" id="form-max-count" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="form-start-at">Start At</label>
+                            <input type="datetime-local" v-model="startAt" id="form-start-at" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="form-end-at">End At</label>
+                            <input type="datetime-local" v-model="endAt" id="form-end-at" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                Filter
+                                <input type="button" @click="append" value="ADD" class="btn btn-primary">
+                            </label>
+
+                            <div class="form-inline">
+                                <div v-for="(filter, index) in filters" class="form-group">
+                                    <label>
+                                        <input v-model="filter.key" type="text" name="key" class="form-control">
+                                        <select v-model="filter.operator" class="form-control">
+                                            <option value="$IN">IN</option>
+                                            <option value="$N_IN">N_IN</option>
+                                            <option value="$EQ">EQ</option>
+                                            <option value="$N_EQ">N_EQ</option>
+                                            <option value="$REGEX">REGEX</option>
+                                            <option value="$N_REGEX">N_REGEX</option>
+                                            <option value="$GT">GT</option>
+                                            <option value="$GTE">GTE</option>
+                                            <option value="$LT">LT</option>
+                                            <option value="$LTE">LTE</option>
+                                        </select>
+                                        <input v-model="filter.value" type="text" name="value" class="form-control">
+                                        <input type="button" @click="remove(index)" value="delete" class="form-control">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="form-content">
+                                Content
+                                <button type="button"
+                                        class="btn btn-primary"
+                                        data-toggle="modal"
+                                        data-target="#exampleModal" @click="editContent">
+                                    EDIT
+                                </button>
+                            </label>
+                            <textarea class="form-control"
+                                      id="form-content"
+                                      v-model="content" disabled></textarea>
+                        </div>
+                        <div class="form-group form-check">
+                            <input type="checkbox" v-model="alwaysReturn" id="form-always-return"
+                                   class="form-check-input">
+                            <label for="form-always-return" class="form-check-label">Always Return</label>
+                        </div>
+                        <input type="button" class="btn btn-primary" @click="show" value="SAVE">
+                    </div>
+                </div>
+                <div class="card-footer">
+                    123
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+    let application = new Vue({
+        el: '#app',
+
+        data: {
+            product: "",
+            type: "0",
+            presetType: "0",
+            title: "",
+            maxCount: "",
+            startAt: "",
+            endAt: "",
+            filters: [],
+            content: "",
+            alwaysReturn: false
+        },
+
+        methods: {
+            append: function () {
+                this.filters.push({
+                    key: "",
+                    operator: "",
+                    value: ""
+                });
+            },
+
+            remove: function (index) {
+                this.filters.splice(index, 1);
+            },
+
+            editContent: function () {
+                editor1.setValue(this.content);
+            },
+
+            saveContent: function () {
+                this.content = editor1.getValue();
+            },
+
+            show: function () {
+                let result = {
+                    product: this.product,
+                    type: this.type,
+                    presetType: this.presetType,
+                    title: this.title,
+                    maxCount: this.maxCount,
+                    startAt: this.startAt,
+                    endAt: this.endAt,
+                    content: this.content,
+                    alwaysReturn: this.alwaysReturn,
+                    enable: false
+                };
+
+
+                let filter = {};
+
+                this.filters.forEach(v => {
+                    // If filter condition is not enough, drop this filter;
+                    if (v.key.length === 0 || v.operator.length === 0 || v.value.length === 0) {
+                        return;
+                    }
+
+                    if (!filter.hasOwnProperty(v.key)) {
+                        filter[v.key] = {};
+                    }
+
+                    let valueArray = v.value.split(",");
+
+                    if (valueArray.length === 1) {
+                        filter[v.key][v.operator] = valueArray[0];
+                    } else {
+                        filter[v.key][v.operator] = valueArray;
+                    }
+                });
+
+                result.filter = filter;
+                console.log(result);
+            }
+        }
+    });
+</script>
+
+<div class="modal fade"
+     id="exampleModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">EDIT</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="message-text" class="col-form-label">Content</label>
+                    <textarea class="form-control" id="message-text"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button"
+                        class="btn btn-primary"
+                        data-dismiss="modal"
+                        onclick="application.saveContent()">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const editor1 = CodeMirror.fromTextArea(document.getElementById("message-text"), {
+        // lineNumbers: true,
+        styleActiveLine: true,
+        matchBrackets: true,
+        indentUnit: 4,
+    });
+
+    // const editor2 = CodeMirror.fromTextArea(document.getElementById("code"), {
+    //     lineNumbers: true,
+    //     styleActiveLine: true,
+    //     matchBrackets: true,
+    //     indentUnit: 4,
+    //     readOnly: true
+    // });
+
+    // const obj = {
+    //     "message": "",
+    //     "code": 200,
+    //     "response": {
+    //         "totalCount": 1,
+    //         "pageSize": 5,
+    //         "page": 1,
+    //         "page2": 1,
+    //         "page3": 1,
+    //         "page4": 1,
+    //         "page5": 1,
+    //     },
+    //     "success": true
+    // };
+    // editor2.setValue(JSON.stringify(obj, null, 4));
+</script>
+</html>

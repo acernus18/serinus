@@ -1,114 +1,111 @@
 <html lang="en">
 <head>
+    <meta charset="utf-8">
     <title></title>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.8/vue.min.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/codemirror/5.46.0/codemirror.css">
+    <script src="https://cdn.staticfile.org/codemirror/5.46.0/codemirror.js"></script>
+    <script src="https://cdn.staticfile.org/codemirror/5.46.0/addon/selection/active-line.js"></script>
+    <script src="https://cdn.staticfile.org/codemirror/5.46.0/addon/edit/matchbrackets.js"></script>
+    <script src="https://cdn.staticfile.org/codemirror/5.46.0/mode/javascript/javascript.js"></script>
 
     <script src="./scripts/common.js"></script>
 </head>
 <body>
 <form id="form">
     <div id="app">
-        <!--1-->
-        <label>
-            Product
-            <input v-model="product" type="text" name="product">
-        </label>
-        <br/>
-        <!--2 private Integer type;-->
-        <label>
-            Type
-            <select v-model="type">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
+        <div class="form-group">
+            <label for="form-type">Type</label>
+            <select v-model="type" id="form-type" class="form-control">
+                <option value="0">Normal</option>
+                <option value="1">Full</option>
+                <option value="2">AB-Test</option>
             </select>
-        </label>
-        <br/>
-
-        <!--3 private Integer presetType;-->
-        <label>
-            Preset Type
-            <select v-model="presetType">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
+        </div>
+        <div class="form-group">
+            <label for="form-preset-type">Preset Type</label>
+            <select v-model="presetType" id="form-preset-type" class="form-control">
+                <option value="0">Normal</option>
+                <option value="1">Black</option>
+                <option value="2">White</option>
             </select>
-        </label>
-        <br/>
+        </div>
+        <div class="form-group">
+            <label for="form-title">Title</label>
+            <input id="form-title" type="text" v-model="title" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="form-max-count">Max Count</label>
+            <input type="number" v-model="maxCount" id="form-max-count" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="form-start-at">Start At</label>
+            <input type="datetime-local" v-model="startAt" id="form-start-at" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="form-end-at">End At</label>
+            <input type="datetime-local" v-model="endAt" id="form-end-at" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>
+                Filter
+                <input type="button" @click="append" value="ADD" class="btn btn-primary">
+            </label>
 
-        <!--4 private String title;-->
-        <label>
-            Title
-            <input type="text" v-model="title">
-        </label>
-        <br/>
-
-        <!--5-->
-        <label>
-            Max Count
-            <input type="number" v-model="maxCount">
-        </label>
-        <br/>
-
-        <!--6 private Date startAt;-->
-        <label>
-            Start At
-            <input type="datetime-local" v-model="startAt">
-        </label>
-        <br/>
-
-        <!--7 private Date endAt;-->
-        <label>
-            End At
-            <input type="datetime-local" v-model="endAt">
-        </label>
-        <br/>
-
-        <!--8 private String filter;-->
-        <label v-for="(filter, index) in filters">Filter : {{index}}
-            <input v-model="filter.key" type="text" name="key">
-            <select v-model="filter.operator">
-                <option value="volvo">Volvo</option>
-                <option value="saab">Saab</option>
-                <option value="opel">Opel</option>
-                <option value="audi">Audi</option>
-            </select>
-            <input v-model="filter.value" type="text" name="value">
-            <input type="button" @click="remove(index)" value="delete">
-            {{filter}}
-            <br/>
-        </label>
-        <input type="button" @click="append" value="add">
-        <br/>
-
-        <!--9 private String content;-->
-        <label>
-            Content
-            <textarea id="content" v-model="content"></textarea>
-            <button>EDIT</button>
-        </label>
-        <br/>
-
-        <!--10-->
-        <label>
-            Always Return
-            <input type="checkbox" v-model="alwaysReturn">
-        </label>
-        <br/>
-        <input type="button" @click="show" value="submit">
+            <div class="form-inline">
+                <ul class="list-group list-group-flush">
+                    <li v-for="(filter, index) in filters" class="list-group-item">
+                        <label>
+                            <input v-model="filter.key" type="text" name="key" class="form-control">
+                            <select v-model="filter.operator" class="form-control">
+                                <option value="$IN">IN</option>
+                                <option value="$N_IN">N_IN</option>
+                                <option value="$EQ">EQ</option>
+                                <option value="$N_EQ">N_EQ</option>
+                                <option value="$REGEX">REGEX</option>
+                                <option value="$N_REGEX">N_REGEX</option>
+                                <option value="$GT">GT</option>
+                                <option value="$GTE">GTE</option>
+                                <option value="$LT">LT</option>
+                                <option value="$LTE">LTE</option>
+                            </select>
+                            <input v-model="filter.value" type="text" name="value" class="form-control">
+                            <input type="button" @click="remove(index)" value="delete" class="form-control">
+                        </label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="form-content">
+                Content
+                <button type="button"
+                        class="btn btn-primary"
+                        data-toggle="modal"
+                        data-target="#exampleModal" @click="editContent">
+                    EDIT
+                </button>
+            </label>
+            <textarea class="form-control"
+                      id="form-content"
+                      v-model="content" disabled></textarea>
+        </div>
+        <div class="form-group form-check">
+            <input type="checkbox" v-model="alwaysReturn" id="form-always-return" class="form-check-input">
+            <label for="form-always-return" class="form-check-label">Always Return</label>
+        </div>
+        <input type="button" class="btn btn-primary" @click="show" value="SAVE">
     </div>
-
 </form>
 </body>
 <script>
-    // const editor = CodeMirror.fromTextArea(document.getElementById("content"), {
-    //     lineNumbers: true,
-    //     styleActiveLine: true,
-    //     matchBrackets: true,
-    //     indentUnit: 4,
-    // });
-
     let application = new Vue({
         el: '#app',
 
@@ -136,6 +133,14 @@
 
             remove: function (index) {
                 this.filters.splice(index, 1);
+            },
+
+            editContent: function () {
+                editor.setValue(this.content);
+            },
+
+            saveContent: function () {
+                this.content = editor.getValue();
             },
 
             show: function () {
@@ -179,7 +184,49 @@
             }
         }
     });
+</script>
 
+<div class="modal fade"
+     id="exampleModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">EDIT</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="message-text" class="col-form-label">Content</label>
+                    <textarea class="form-control" id="message-text"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button"
+                        class="btn btn-primary"
+                        data-dismiss="modal"
+                        onclick="application.saveContent()">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const editor = CodeMirror.fromTextArea(document.getElementById("message-text"), {
+        // lineNumbers: true,
+        styleActiveLine: true,
+        matchBrackets: true,
+        indentUnit: 4,
+    });
 </script>
 </html>
 

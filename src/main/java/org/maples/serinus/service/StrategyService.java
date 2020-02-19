@@ -39,7 +39,27 @@ public class StrategyService {
 
     private String dispatchSHA;
 
-    @Transactional
+    @PostConstruct
+    public void postConstruct() {
+        if (StringUtils.isBlank(dispatchSHA)) {
+            dispatchSHA = redisTemplate.execute((RedisCallback<String>) connection -> {
+                String script = null;
+                try {
+                    URL dispatchScriptURL = ResourceUtils.getURL("classpath:schema/dispatch.lua");
+                    script = IOUtils.toString(dispatchScriptURL);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (StringUtils.isBlank(script)) {
+                    throw new RuntimeException("Load Dispatch Script Fail");
+                }
+                return connection.scriptLoad(script.getBytes());
+            });
+            log.info("Load finished, sha = {}", dispatchSHA);
+        }
+    }
+
     public SerinusStrategy getStrategyByUUID(String uuid) {
         SerinusStrategy strategy = strategyMapper.selectByPrimaryKey(uuid);
 
@@ -93,7 +113,6 @@ public class StrategyService {
         strategyMapper.insert(strategy);
     }
 
-    @Transactional
     public Map<String, Map<String, List<SerinusStrategy>>> getSerinusStrategyMap() {
         Map<String, Map<String, List<SerinusStrategy>>> result = new HashMap<>();
         List<SerinusStrategy> serinusStrategies = strategyMapper.selectAll();
@@ -113,7 +132,6 @@ public class StrategyService {
         return result;
     }
 
-    @Transactional
     public Map<String, List<SerinusStrategy>> getSerinusStrategyList() {
         Map<String, List<SerinusStrategy>> result = new HashMap<>();
         List<SerinusStrategy> serinusStrategies = strategyMapper.selectAll();
@@ -132,27 +150,6 @@ public class StrategyService {
 
     public List<SerinusStrategy> getSerinusStrategiesByProduct(String product) {
         return strategyMapper.selectAllEnabledByProduct(product);
-    }
-
-    @PostConstruct
-    public void postConstruct() {
-        if (StringUtils.isBlank(dispatchSHA)) {
-            dispatchSHA = redisTemplate.execute((RedisCallback<String>) connection -> {
-                String script = null;
-                try {
-                    URL dispatchScriptURL = ResourceUtils.getURL("classpath:schema/dispatch.lua");
-                    script = IOUtils.toString(dispatchScriptURL);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                if (StringUtils.isBlank(script)) {
-                    throw new RuntimeException("Load Dispatch Script Fail");
-                }
-                return connection.scriptLoad(script.getBytes());
-            });
-            log.info("Load finished, sha = {}", dispatchSHA);
-        }
     }
 
     private byte[] createDispatchArg(SerinusStrategy strategy, String deviceID) {

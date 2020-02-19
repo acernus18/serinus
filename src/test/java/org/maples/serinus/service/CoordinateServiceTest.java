@@ -25,14 +25,14 @@ public class CoordinateServiceTest {
         Lock lock = new ReentrantLock();
         Condition condition = lock.newCondition();
         lock.lock();
-        coordinateService.subscribe("/hello/info", log::info);
+        // coordinateService.subscribe("/hello/info", log::info);
         condition.await();
     }
 
     @Test
     public void subscribe2() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        coordinateService.subscribe("/hello/info", log::info);
+        // coordinateService.subscribe("/hello/info", log::info);
         latch.await();
     }
 }

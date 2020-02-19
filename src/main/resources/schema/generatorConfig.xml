@@ -34,22 +34,6 @@
                              targetProject="src/main/java"
                              type="XMLMAPPER"/>
 
-        <!--<table tableName="tb_serinus_user" domainObjectName="SerinusUser">-->
-        <!--    <generatedKey column="id" sqlStatement="JDBC"/>-->
-        <!--</table>-->
-        <!--<table tableName="tb_serinus_role" domainObjectName="SerinusRole">-->
-        <!--    <generatedKey column="id" sqlStatement="JDBC"/>-->
-        <!--</table>-->
-        <!--<table tableName="tb_serinus_resources" domainObjectName="SerinusResources">-->
-        <!--    <generatedKey column="id" sqlStatement="JDBC"/>-->
-        <!--</table>-->
-        <!--<table tableName="tb_serinus_role_resources" domainObjectName="RoleResources">-->
-        <!--    <generatedKey column="id" sqlStatement="JDBC"/>-->
-        <!--</table>-->
-        <!--<table tableName="tb_serinus_user_role" domainObjectName="UserRole">-->
-        <!--    <generatedKey column="id" sqlStatement="JDBC"/>-->
-        <!--</table>-->
-
         <!--<table tableName="tb_serinus_permission" domainObjectName="SerinusPermission">-->
         <!--    <generatedKey column="id" sqlStatement="JDBC"/>-->
         <!--</table>-->

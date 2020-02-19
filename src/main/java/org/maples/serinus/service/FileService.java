@@ -39,9 +39,6 @@ public class FileService {
     @Autowired
     private SerinusFileMetaMapper fileMetaMapper;
 
-    @Autowired
-    private UserService userService;
-
     @PostConstruct
     public void postConstruct() {
         if (ENABLE) {
@@ -139,7 +136,7 @@ public class FileService {
 
             file.setFilename(fileName);
             file.setExtension(ext);
-            file.setUploader(userService.getCurrentPrincipal());
+            // file.setUploader(userService.getCurrentPrincipal());
             file.setMd5("");
 
             upload(file, fileBuff);

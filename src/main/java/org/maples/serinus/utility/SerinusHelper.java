@@ -34,8 +34,8 @@ public class SerinusHelper {
 
         for (int i = 0; i < minLength; i++) {
             try {
-                int v1 = Integer.valueOf(versionArray1[i]);
-                int v2 = Integer.valueOf(versionArray2[i]);
+                int v1 = Integer.parseInt(versionArray1[i]);
+                int v2 = Integer.parseInt(versionArray2[i]);
 
                 if (v1 != v2) {
                     return Integer.compare(v1, v2);
